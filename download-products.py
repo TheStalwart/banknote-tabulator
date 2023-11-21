@@ -4,6 +4,7 @@ import os
 import time
 import datetime
 import math
+from bs4 import BeautifulSoup
 
 
 # Keep cache of entire inventory in RAM
@@ -60,3 +61,20 @@ else:
         download_index()
 
 
+# Update inventory details if missing
+for item in products:
+    item_file_path = os.path.join(folder, f"{item['id']}.json")
+    if (os.path.isfile(item_file_path)) and (os.path.getsize(item_file_path) > 0):
+        print(f"{item['id']} details already downloaded")
+        continue
+
+    print(f"Downloading details of {item['id']}: {item['title']}")
+    r = requests.get(item['url'])
+    html_contents = r.text
+    soup = BeautifulSoup(html_contents, 'html.parser')  
+    leasing_item = soup.find('product-item-leasing')
+    product_data = leasing_item[':product']
+    product_properties = json.loads(product_data)
+
+    with open(item_file_path, "w", encoding='utf-8') as item_file:
+        json.dump(product_properties, item_file, indent=2)
