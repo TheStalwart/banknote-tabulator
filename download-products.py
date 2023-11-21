@@ -5,6 +5,7 @@ import time
 import datetime
 import math
 from bs4 import BeautifulSoup
+import re
 
 
 # Keep cache of entire inventory in RAM
@@ -97,7 +98,22 @@ for item in products:
     n_item = { 'id': item['id'] }
     n_item['title'] = item['title']
     n_item['price'] = float(item['price'])
-    n_item['address'] = item['branche']['address']
+
+    specs = properties[item['id']]['description_f']
+    for entry in specs:
+        if re.search('(cpu|proces)', entry['title'], re.IGNORECASE) and (len(entry['value'].strip(' -,')) > 0):
+            n_item['cpu'] = entry['value'].strip(' -,')
+        if re.search('(ram)', entry['title'], re.IGNORECASE):
+            n_item['ram'] = entry['value'].strip()
+        if re.search('(atmi|disk|hdd|ssd)', entry['title'], re.IGNORECASE) and not re.search('(oper)', entry['title'], re.IGNORECASE):
+            n_item['storage'] = entry['value'].strip()
+        if re.search('(gpu|video)', entry['title'], re.IGNORECASE):
+            n_item['gpu'] = entry['value'].strip(' -"')
+
+    address_components = item['branche']['address'].split('<br>')
+    n_item['city'] = address_components[0].strip(' ,')
+    n_item['local_address'] = address_components[1].strip(' ,')
+
     n_item['url'] = item['url']
     normalized_inventory.append(n_item)
 
