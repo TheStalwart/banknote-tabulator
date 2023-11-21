@@ -64,12 +64,17 @@ else:
         download_index()
 
 
-# Update inventory details if missing
+# Load additional properties absent in index
+properties = {}
 for item in products:
     item_file_path = os.path.join(folder, f"{item['id']}.json")
     if (os.path.isfile(item_file_path)) and (os.path.getsize(item_file_path) > 0):
-        print(f"{item['id']} details already downloaded")
-        continue
+        item_file = open(item_file_path)
+        product_properties = json.load(item_file)
+        if item['price'] == product_properties['price']:
+            # print(f"{item['id']} details already downloaded")
+            properties[item['id']] = product_properties
+            continue
 
     print(f"Downloading details of {item['id']}: {item['title']}")
     r = requests.get(item['url'])
@@ -78,6 +83,7 @@ for item in products:
     leasing_item = soup.find('product-item-leasing')
     product_data = leasing_item[':product']
     product_properties = json.loads(product_data)
+    properties[item['id']] = product_properties
 
     with open(item_file_path, "w", encoding='utf-8') as item_file:
         json.dump(product_properties, item_file, indent=2)
