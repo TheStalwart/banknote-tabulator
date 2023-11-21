@@ -87,3 +87,20 @@ for item in products:
 
     with open(item_file_path, "w", encoding='utf-8') as item_file:
         json.dump(product_properties, item_file, indent=2)
+
+
+# Normalize data for use in frontend
+normalized_file_name = "normalized.json"
+normalized_file_path = os.path.join(folder, normalized_file_name)
+normalized_inventory = []
+for item in products:
+    n_item = { 'id': item['id'] }
+    n_item['title'] = item['title']
+    n_item['price'] = float(item['price'])
+    n_item['address'] = item['branche']['address']
+    n_item['url'] = item['url']
+    normalized_inventory.append(n_item)
+
+print(f"Dumping {len(normalized_inventory)} products to {normalized_file_path}")
+with open(normalized_file_path, "w", encoding='utf-8') as normalized_file:
+    json.dump(normalized_inventory, normalized_file, indent=2)
