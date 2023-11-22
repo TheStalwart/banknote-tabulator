@@ -1,0 +1,13 @@
+services:
+  downloader:
+    build: .
+    volumes:
+      - .:/app
+    command: python download-products.py
+
+  web:
+    image: nginx
+    ports: 
+      - 3000:80
+    volumes:
+      - .:/usr/share/nginx/html/
