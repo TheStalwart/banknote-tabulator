@@ -6,6 +6,7 @@ import datetime
 import math
 from bs4 import BeautifulSoup
 import re
+import pathlib
 
 
 # Keep cache of entire inventory in RAM
@@ -13,7 +14,8 @@ products = []
 
 
 # Define inventory file storage paths
-folder = "inventory"
+root = pathlib.Path(__file__).parent.resolve()
+folder = os.path.join(root, "inventory")
 index_file_name = "index.json"
 index_file_path = os.path.join(folder, index_file_name)
 
