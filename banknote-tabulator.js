@@ -11,7 +11,7 @@ function loadInventory() {
         start.setAttribute("type", "number");
         start.setAttribute("placeholder", "Min");
         start.style.padding = "4px";
-        start.style.width = "50%";
+        start.style.width = "100%";
         start.style.boxSizing = "border-box";
 
         start.value = cell.getValue();
@@ -46,6 +46,7 @@ function loadInventory() {
 
 
         container.appendChild(start);
+        container.appendChild(document.createElement("br"));
         container.appendChild(end);
 
         return container;
@@ -113,7 +114,9 @@ function loadInventory() {
                 headerSortStartingDir:"desc",
                 headerTooltip: "Internal ID for debugging"},
             {title:"Title", field:"title", headerFilter: true},
-            {title:"Price", field:"price", width: 150, 
+            {title:"Price", field:"price", 
+                width: 70,
+                hozAlign:"right",
                 headerFilter: minMaxFilterEditor, 
                 headerFilterFunc: minMaxFilterFunction, 
                 headerFilterLiveFilter: false},
