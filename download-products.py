@@ -126,5 +126,9 @@ for item in products:
     normalized_inventory.append(n_item)
 
 print(f"Dumping {len(normalized_inventory)} products to {normalized_file_path}")
+inventory_dictionary = {
+    'index_file_modification_timestamp': index_file_modification_timestamp,
+    'inventory': normalized_inventory,
+}
 with open(normalized_file_path, "w", encoding='utf-8') as normalized_file:
-    json.dump(normalized_inventory, normalized_file, indent=2)
+    json.dump(inventory_dictionary, normalized_file, indent=2)

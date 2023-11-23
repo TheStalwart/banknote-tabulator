@@ -100,8 +100,10 @@ function loadInventory() {
             //url - the URL of the request
             //params - the parameters passed with the request
             //response - the JSON object returned in the body of the response.
-            console.log(response)
-            return response; //return the tableData property of a response json object
+            document.getElementById('last_index_refresh').innerHTML = moment(response['index_file_modification_timestamp'], 'X').fromNow();
+            moment.locale("lv");
+            document.getElementById('last_index_refresh').title = moment(response['index_file_modification_timestamp'], 'X').format('llll');
+            return response['inventory'];
         },
         columns: [
             {title:"SKU", field:"article", headerFilter: true, 
