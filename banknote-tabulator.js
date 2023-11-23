@@ -124,6 +124,7 @@ function loadInventory() {
             {title:"City", field:"city", headerFilter: true},
             {title:"Address", field:"local_address", headerFilter: true},
             {title:"Updated", field:"timestamp",
+                headerTooltip: "Sort by date to see recently discounted items",
                 headerSortStartingDir:"desc",
                 formatter:"datetime",
                 formatterParams:{
