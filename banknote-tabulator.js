@@ -105,8 +105,10 @@ function loadInventory() {
         },
         columns: [
             {title:"SKU", field:"article", headerFilter: true, 
+                headerSortStartingDir:"desc",
                 headerTooltip: "Higher number == newer product"},
             {title:"ID", field:"id", headerFilter: true,
+                headerSortStartingDir:"desc",
                 headerTooltip: "Internal ID for debugging"},
             {title:"Title", field:"title", headerFilter: true},
             {title:"Price", field:"price", width: 150, 
