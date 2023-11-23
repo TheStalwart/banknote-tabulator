@@ -115,6 +115,11 @@ for item in products:
     n_item['local_address'] = address_components[1].strip(' ,')
 
     n_item['url'] = item['url']
+
+    n_item['images'] = []
+    for image_data in properties[item['id']]['erp_images']:
+        n_item['images'].append(f"https://veikals.banknote.lv/storage/{image_data['path']}")
+        
     normalized_inventory.append(n_item)
 
 print(f"Dumping {len(normalized_inventory)} products to {normalized_file_path}")
