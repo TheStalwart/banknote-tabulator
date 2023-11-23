@@ -7,4 +7,3 @@ among other UI/UX mortal sins.
 
 I'm hosting an instance 
 at [banknote.retromultiplayer.com](https://banknote.retromultiplayer.com/)
-but index is not being regularly updated for technical reasons.
