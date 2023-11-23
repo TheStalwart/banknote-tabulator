@@ -48,7 +48,7 @@ if not os.path.isfile(index_file_path):
 else:
     try:
         # Check index file age
-        INDEX_FILE_MAX_AGE_MINUTES = 60
+        INDEX_FILE_MAX_AGE_MINUTES = 55
         index_file_modification_timestamp = os.path.getmtime(index_file_path)
         current_timestamp = time.time()
         index_file_age_seconds = current_timestamp - index_file_modification_timestamp
