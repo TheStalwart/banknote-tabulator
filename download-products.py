@@ -2,7 +2,7 @@ import requests
 import json
 import os
 import time
-import datetime
+from datetime import datetime
 import math
 from bs4 import BeautifulSoup
 import re
@@ -71,9 +71,10 @@ else:
 properties = {}
 for item in products:
     item_file_path = os.path.join(folder, f"{item['id']}.json")
+    product_properties = { 'item_file_path': item_file_path }
     if (os.path.isfile(item_file_path)) and (os.path.getsize(item_file_path) > 0):
         item_file = open(item_file_path)
-        product_properties = json.load(item_file)
+        product_properties.update(json.load(item_file))
         if item['price'] == product_properties['price']:
             # print(f"{item['id']} details already downloaded")
             properties[item['id']] = product_properties
@@ -85,7 +86,7 @@ for item in products:
     soup = BeautifulSoup(html_contents, 'html.parser')  
     leasing_item = soup.find('product-item-leasing')
     product_data = leasing_item[':product']
-    product_properties = json.loads(product_data)
+    product_properties.update(json.loads(product_data))
     properties[item['id']] = product_properties
 
     with open(item_file_path, "w", encoding='utf-8') as item_file:
@@ -123,6 +124,8 @@ for item in products:
     for image_data in properties[item['id']]['erp_images']:
         n_item['images'].append(f"https://veikals.banknote.lv/storage/{image_data['path']}")
         
+    n_item['timestamp'] = datetime.fromtimestamp(os.path.getmtime(properties[item['id']]['item_file_path'])).isoformat()
+
     normalized_inventory.append(n_item)
 
 print(f"Dumping {len(normalized_inventory)} products to {normalized_file_path}")

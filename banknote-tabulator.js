@@ -123,6 +123,12 @@ function loadInventory() {
             {title:"GPU", field:"gpu", headerFilter: true},
             {title:"City", field:"city", headerFilter: true},
             {title:"Address", field:"local_address", headerFilter: true},
+            {title:"Updated", field:"timestamp",
+                headerSortStartingDir:"desc",
+                formatter:"datetime",
+                formatterParams:{
+                    inputFormat:"iso",
+                }},
             {title:"URL", field:"url", headerFilter: true, formatter: "link"},
         ],
         movableColumns: true,
