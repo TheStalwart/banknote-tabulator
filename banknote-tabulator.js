@@ -154,9 +154,18 @@ function loadInventory() {
                 },
                 headerTooltip: "Sort by date to see recently discounted items",
                 headerSortStartingDir:"desc",
-                formatter:"datetime",
-                formatterParams:{
-                    inputFormat:"iso",
+                formatter:function(cell, formatterParams, onRendered){
+                    //cell - the cell component
+                    //formatterParams - parameters set for the column
+                    //onRendered - function to call when the formatter has been rendered
+                    
+                    var itemTimestamp = moment(cell.getValue())
+
+                    if (itemTimestamp > timestampTrustThreshold) {
+                        return itemTimestamp.format("L LTS");
+                    } else {
+                        return "" // do not display untrue values
+                    }
                 }},
             {title:"Title", field:"title", headerFilter: true},
             {title:"Price", field:"price", 
