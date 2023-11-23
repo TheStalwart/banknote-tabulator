@@ -96,6 +96,9 @@ function loadInventory() {
 
     table = new Tabulator("#example-table", {
         index:"id",
+        initialSort:[
+            {column:"timestamp", dir:"desc"}, 
+        ],
         ajaxURL: banknoteInventoryURL,
         ajaxResponse:function(url, params, response){
             //url - the URL of the request
