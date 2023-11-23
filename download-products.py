@@ -40,6 +40,7 @@ def download_index():
     print(f"Dumping {len(products)} products to {index_file_path}")
     with open(index_file_path, "w") as index_file:
         json.dump(products, index_file, indent=2)
+        return os.path.getmtime(index_file_path)
 
 
 # Update inventory index if necessary
@@ -61,10 +62,10 @@ else:
             products = json.load(index_file)
             print(f"Loaded {len(products)} products from {index_file_path}")
         else:
-            download_index()
+            index_file_modification_timestamp = download_index()
     except:
         print(f"Failed to parse index file, redownloading")
-        download_index()
+        index_file_modification_timestamp = download_index()
 
 
 # Load additional properties absent in index
