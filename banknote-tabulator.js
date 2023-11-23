@@ -93,6 +93,9 @@ function loadInventory() {
     };
 
     var banknoteInventoryURL = "inventory/normalized.json"
+    
+    var timestampTrustThreshold = moment(0) // failsafe value that doesn't affect sorting
+    var initialScrapeDurationEstimate = moment.duration(30, 'minutes');
 
     table = new Tabulator("#example-table", {
         index:"id",
@@ -107,6 +110,13 @@ function loadInventory() {
             document.getElementById('last_index_refresh').innerHTML = moment(response['index_file_modification_timestamp'], 'X').fromNow();
             moment.locale("lv");
             document.getElementById('last_index_refresh').title = moment(response['index_file_modification_timestamp'], 'X').format('llll');
+
+            var oldestEntryTimestamp = moment(response['inventory'].sort((a, b) => {
+                return moment(a["timestamp"]) - moment(b["timestamp"])
+            })[0]["timestamp"])
+            oldestEntryTimestamp.add(initialScrapeDurationEstimate)
+            timestampTrustThreshold = oldestEntryTimestamp
+
             return response['inventory'];
         },
         columns: [
@@ -120,8 +130,27 @@ function loadInventory() {
                 headerSortStartingDir:"desc",
                 headerTooltip: "Internal ID for debugging"},
             {title:"Updated", field:"timestamp",
-                sorter: "datetime", sorterParams:{
-                    format:"iso",
+                sorter:function(a, b, aRow, bRow, column, dir, sorterParams){
+                    //a, b - the two values being compared
+                    //aRow, bRow - the row components for the values being compared (useful if you need to access additional fields in the row data for the sort)
+                    //column - the column component for the column being sorted
+                    //dir - the direction of the sort ("asc" or "desc")
+                    //sorterParams - sorterParams object from column definition array
+
+                    /*
+                        Banknote doesn't publish timestamps of items,
+                        so we use item json file modification times
+                        for sorting by "item modification date".
+
+                        Initial scrape took 20 minutes on my workstation,
+                        so items older than first item timestamp + 30 minutes
+                        should be sorted by article instead.
+                    */
+                    if (moment(a) < timestampTrustThreshold && moment(b) < timestampTrustThreshold) {
+                        return aRow.getData().article - bRow.getData().article
+                    } else {
+                        return moment(a) - moment(b);
+                    }
                 },
                 headerTooltip: "Sort by date to see recently discounted items",
                 headerSortStartingDir:"desc",
