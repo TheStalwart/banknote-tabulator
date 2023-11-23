@@ -95,7 +95,7 @@ normalized_file_name = "normalized.json"
 normalized_file_path = os.path.join(folder, normalized_file_name)
 normalized_inventory = []
 for item in products:
-    n_item = { 'id': item['id'] }
+    n_item = { 'article': item['article'] }
     n_item['title'] = item['title']
     n_item['price'] = float(item['price'])
 
