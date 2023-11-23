@@ -108,6 +108,7 @@ function loadInventory() {
         },
         columns: [
             {title:"SKU", field:"article", headerFilter: true, 
+                sorter:"number",
                 headerSortStartingDir:"desc",
                 headerTooltip: "Higher number == newer product"},
             {title:"ID", field:"id", headerFilter: true,
