@@ -84,9 +84,10 @@ function loadInventory() {
         ).join('')
 
         let popupHtml = `
-<div class="m<div class="modal-gallery" style="overflow: auto; overflow: auto; white-space: nowrap;">
-    ${imageHTML}
-</div>
+            <div class="modal-gallery" style="overflow: auto; overflow: auto; white-space: nowrap;" 
+                onWheel="this.scrollLeft+=event.deltaY>0?100:-100"> <!-- https://stackoverflow.com/questions/18481308/set-mouse-wheel-to-horizontal-scroll-using-css -->
+                ${imageHTML}
+            </div>
         `;
 
         Swal.fire({
