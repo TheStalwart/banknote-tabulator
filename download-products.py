@@ -116,7 +116,8 @@ for item in products:
             n_item['cpu'] = entry['value'].strip(' -,')
         if re.search('(ram)', entry['title'], re.IGNORECASE):
             n_item['ram'] = entry['value'].strip()
-        if re.search('(atmi|disk|hdd|ssd)', entry['title'], re.IGNORECASE) and not re.search('(oper)', entry['title'], re.IGNORECASE):
+        if re.search('(atmi|disk|hdd|ssd)', entry['title'], re.IGNORECASE) and not re.search('(oper|las)', entry['title'], re.IGNORECASE):
+            # avoid "Diska lasītājs" key
             n_item['storage'] = entry['value'].strip()
         if re.search('(gpu|video)', entry['title'], re.IGNORECASE):
             n_item['gpu'] = entry['value'].strip(' -"')
