@@ -72,12 +72,12 @@ else:
 properties = {}
 for item in products:
     item_file_path = os.path.join(folder, f"{item['id']}.json")
-    product_properties = { 'item_file_path': item_file_path }
     if (os.path.isfile(item_file_path)) and (os.path.getsize(item_file_path) > 0):
         item_file = open(item_file_path)
-        product_properties.update(json.load(item_file))
+        product_properties = json.load(item_file)
         if item['price'] == product_properties['price']:
             # print(f"{item['id']} details already downloaded")
+            product_properties['item_file_path'] = item_file_path
             properties[item['id']] = product_properties
             continue
 
@@ -87,11 +87,11 @@ for item in products:
     soup = BeautifulSoup(html_contents, 'html.parser')  
     leasing_item = soup.find('product-item-leasing')
     product_data = leasing_item[':product']
-    product_properties.update(json.loads(product_data))
-    properties[item['id']] = product_properties
-
+    product_properties = json.loads(product_data)
     with open(item_file_path, "w", encoding='utf-8') as item_file:
         json.dump(product_properties, item_file, indent=2)
+    product_properties['item_file_path'] = item_file_path
+    properties[item['id']] = product_properties
 
 
 # Normalize data for use in frontend
