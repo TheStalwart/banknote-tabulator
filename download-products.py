@@ -45,7 +45,7 @@ def download_index():
 
 # Update inventory index if necessary
 if not os.path.isfile(index_file_path):
-    download_index()
+    index_file_modification_timestamp = download_index()
 else:
     try:
         # Check index file age
