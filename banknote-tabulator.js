@@ -76,7 +76,7 @@ function loadInventory() {
         return true; //must return a boolean, true if it passes the filter.
     }
 
-    var rowClickHandler = function(e, row, onRendered){
+    var rowClickHandler = function(e, row){
         let productData = row.getData();
 
         let imageHTML = productData.images.map(
@@ -194,6 +194,7 @@ function loadInventory() {
             {title:"URL", field:"url", headerFilter: true, formatter: "link"},
         ],
         movableColumns: true,
-        rowClickPopup: rowClickHandler, //add click popup to row
     });
+
+    table.on("rowClick", rowClickHandler);
 }
