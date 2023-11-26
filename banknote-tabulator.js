@@ -76,32 +76,31 @@ function loadInventory() {
         return true; //must return a boolean, true if it passes the filter.
     }
 
-    //create row popup contents
-    var rowPopupFormatter = function(e, row, onRendered){
+    var rowClickHandler = function(e, row, onRendered){
         let productData = row.getData();
-        let popupContainer = document.createElement("div");
 
         let imageHTML = productData.images.map(
             imageUrl => `<img src="${imageUrl}" style="display: inline-block; max-with: 180px; max-height: 180px; border: 1px solid; border-radius: 2px; margin-right: 4px" />`
         ).join('')
 
-        popupContainer.innerHTML = `
-<div class="modal" tabindex="-1" style="width: 670px; max-width: 100%">
-    <div class="modal-header" style="padding: 12px;">
-        <h2 class="modal-title" style="margin: 0">${productData.title} <span style="color: #777;">(${productData.price}€)</span></h2>
-    </div>
-    <div class="modal-body" style="padding: 12px;">
-        <div class="modal-gallery" style="overflow: auto; overflow: auto; white-space: nowrap;">
-            ${imageHTML}
-        </div>
-    </div>
-    <div class="modal-footer" style="padding: 12px; text-align: center">
-        <a href="${productData.url}" target="_blank" style="display: inline-block; padding: 10px 40px; text-decoration: none; border: 1px solid; text-align: center; border-radius: 4px;">Open</a>
-    </div>
+        let popupHtml = `
+<div class="m<div class="modal-gallery" style="overflow: auto; overflow: auto; white-space: nowrap;">
+    ${imageHTML}
 </div>
         `;
 
-        return popupContainer;
+        Swal.fire({
+            title: `${productData.title} <span style="color: #777;">(${productData.price}€)</span>`,
+            html: popupHtml,
+            width: 800,
+            animation: false,
+            showCloseButton: true,
+            showCancelButton: false,
+            showConfirmButton: false,
+            footer: `<a href="${productData.url}" target="_blank" style="display: inline-block; padding: 10px 40px; text-decoration: none; border: 1px solid; text-align: center; border-radius: 4px;">Open</a>`
+          });
+
+        return null;
     };
 
     var banknoteInventoryURL = "inventory/normalized.json"
@@ -195,6 +194,6 @@ function loadInventory() {
             {title:"URL", field:"url", headerFilter: true, formatter: "link"},
         ],
         movableColumns: true,
-        rowClickPopup: rowPopupFormatter, //add click popup to row
+        rowClickPopup: rowClickHandler, //add click popup to row
     });
 }
