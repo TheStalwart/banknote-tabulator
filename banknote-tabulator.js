@@ -78,18 +78,30 @@ function loadInventory() {
 
     //create row popup contents
     var rowPopupFormatter = function(e, row, onRendered){
-        var data = row.getData(),
-        container = document.createElement("div")
-        container.style = "max-height: 50%"
-        contents = "<strong style='font-size:1.2em;'>" + data.price + " €: <a href='" + data.url + "'>" + data.title + "</a></strong><br/><ul style='padding:0;  margin-top:10px; margin-bottom:0;'>";
-        data.images.forEach(image_url => {
-            contents += "<li><img src='" + image_url + "'></li>";
-        });
-        contents += "</ul>";
+        let productData = row.getData();
+        let popupContainer = document.createElement("div");
 
-        container.innerHTML = contents;
+        let imageHTML = productData.images.map(
+            imageUrl => `<img src="${imageUrl}" style="display: inline-block; max-with: 180px; max-height: 180px; border: 1px solid; border-radius: 2px;" />`
+        ).join('')
 
-        return container;
+        popupContainer.innerHTML = `
+<div class="modal" tabindex="-1" style="width: 670px; max-width: 100%">
+    <div class="modal-header" style="padding: 12px;">
+        <h2 class="modal-title" style="margin: 0">${productData.title} <span style="color: #777;">(${productData.price}€)</span></h2>
+    </div>
+    <div class="modal-body" style="padding: 12px;">
+        <div class="modal-gallery" style="overflow: auto; overflow: auto; white-space: nowrap;">
+            ${imageHTML}
+        </div>
+    </div>
+    <div class="modal-footer" style="padding: 12px; text-align: center">
+        <a href="${productData.url}" target="_blank" style="display: inline-block; padding: 10px 40px; text-decoration: none; border: 1px solid; text-align: center; border-radius: 4px;">Open</a>
+    </div>
+</div>
+        `;
+
+        return popupContainer;
     };
 
     var banknoteInventoryURL = "inventory/normalized.json"
@@ -183,6 +195,6 @@ function loadInventory() {
             {title:"URL", field:"url", headerFilter: true, formatter: "link"},
         ],
         movableColumns: true,
-        rowClickPopup:rowPopupFormatter, //add click popup to row
+        rowClickPopup: rowPopupFormatter, //add click popup to row
     });
 }
