@@ -82,7 +82,7 @@ function loadInventory() {
         let popupContainer = document.createElement("div");
 
         let imageHTML = productData.images.map(
-            imageUrl => `<img src="${imageUrl}" style="display: inline-block; max-with: 180px; max-height: 180px; border: 1px solid; border-radius: 2px;" />`
+            imageUrl => `<img src="${imageUrl}" style="display: inline-block; max-with: 180px; max-height: 180px; border: 1px solid; border-radius: 2px; margin-right: 4px" />`
         ).join('')
 
         popupContainer.innerHTML = `
