@@ -7,6 +7,7 @@ import math
 from bs4 import BeautifulSoup
 import re
 import pathlib
+from operator import itemgetter
 
 
 # Keep cache of entire inventory in RAM
@@ -70,7 +71,12 @@ else:
 
 # Load additional properties absent in index
 properties = {}
-for item in products:
+# If multiple items are added to inventory between downloader executions,
+# download item files in the order of "article", 
+# to avoid listing these items in order reverse of item addition to inventory.
+# Unless we sort index before downloading item files,
+# order of every batch will be overridden by file modification date.
+for item in sorted(products, key=itemgetter('article')):
     item_file_path = os.path.join(folder, f"{item['id']}.json")
     if (os.path.isfile(item_file_path)) and (os.path.getsize(item_file_path) > 0):
         item_file = open(item_file_path)
