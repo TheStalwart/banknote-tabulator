@@ -1,0 +1,28 @@
+:root {
+    color-scheme: dark;
+}
+
+body {
+    color: white;
+    background-color: rgb(58, 58, 60);
+}
+
+a:link, a:visited, a:hover, a:active {
+    color: rgb(10, 132, 255);
+}
+
+.modal-gallery {
+    background-color: rgb(70, 70, 74);
+}
+
+.swal2-modal {
+    background: rgb(70, 70, 74)!important;
+}
+
+.swal2-title {
+    color: lightgray;
+}
+
+.popup-title-price {
+    color: white!important;
+}

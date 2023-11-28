@@ -91,7 +91,7 @@ function loadInventory() {
         `;
 
         Swal.fire({
-            title: `${productData.title} <span style="color: #777;">(${productData.price}€)</span>`,
+            title: `${productData.title} <span style="color: #777;" class="popup-title-price">(${productData.price}€)</span>`,
             html: popupHtml,
             width: 800,
             animation: false,
