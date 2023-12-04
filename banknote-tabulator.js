@@ -195,6 +195,11 @@ function loadInventory() {
             {title:"URL", field:"url", headerFilter: true, formatter: "link"},
         ],
         movableColumns: true,
+        persistence: {
+            sort: true,
+            headerFilter: true,
+            columns: true,
+        },
     });
 
     table.on("rowClick", rowClickHandler);
