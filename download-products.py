@@ -11,7 +11,7 @@ from operator import itemgetter
 
 
 # Keep cache of entire inventory in RAM
-products = []
+product_index = []
 
 
 # Define inventory file storage paths
@@ -26,7 +26,7 @@ def download_index():
     # https://requests.readthedocs.io/en/latest/user/quickstart/#passing-parameters-in-urls
     r = requests.get('https://veikals.banknote.lv/lv/filter-products', params={'categories': 8, 'page': 1})
     first_page = r.json()
-    products.extend(first_page['data'])
+    product_index.extend(first_page['data'])
 
     last_page_number = first_page['last_page']
     print(f"Total amount of pages: {last_page_number}")
@@ -35,12 +35,12 @@ def download_index():
         print(f"Downloading page #{page_number}")
         r = requests.get('https://veikals.banknote.lv/lv/filter-products', params={'categories': 8, 'page': page_number})
         extra_page = r.json()
-        products.extend(extra_page['data'])
+        product_index.extend(extra_page['data'])
 
     # https://www.geeksforgeeks.org/reading-and-writing-json-to-a-file-in-python/
-    print(f"Dumping {len(products)} products to {index_file_path}")
+    print(f"Dumping {len(product_index)} products to {index_file_path}")
     with open(index_file_path, "w") as index_file:
-        json.dump(products, index_file, indent=2)
+        json.dump(product_index, index_file, indent=2)
         return os.path.getmtime(index_file_path)
 
 
@@ -60,8 +60,8 @@ else:
         if index_file_age_minutes < INDEX_FILE_MAX_AGE_MINUTES:
             print(f"Loading inventory from {index_file_name}")
             index_file = open(index_file_path)
-            products = json.load(index_file)
-            print(f"Loaded {len(products)} products from {index_file_path}")
+            product_index = json.load(index_file)
+            print(f"Loaded {len(product_index)} products from {index_file_path}")
         else:
             index_file_modification_timestamp = download_index()
     except:
@@ -76,7 +76,7 @@ properties = {}
 # to avoid listing these items in order reverse of item addition to inventory.
 # Unless we sort index before downloading item files,
 # order of every batch will be overridden by file modification date.
-for item in sorted(products, key=itemgetter('article')):
+for item in sorted(product_index, key=itemgetter('article')):
     item_file_path = os.path.join(folder, f"{item['id']}.json")
     if (os.path.isfile(item_file_path)) and (os.path.getsize(item_file_path) > 0):
         item_file = open(item_file_path)
@@ -104,7 +104,7 @@ for item in sorted(products, key=itemgetter('article')):
 normalized_file_name = "normalized.json"
 normalized_file_path = os.path.join(folder, normalized_file_name)
 normalized_inventory = []
-for item in products:
+for item in product_index:
     n_item = { 'article': item['article'] }
     n_item['id'] = item['id']
     n_item['title'] = item['title']
