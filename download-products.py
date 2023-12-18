@@ -8,6 +8,7 @@ from bs4 import BeautifulSoup
 import re
 import pathlib
 from operator import itemgetter
+from product import Product
 
 
 # Keep cache of entire inventory in RAM
@@ -77,17 +78,21 @@ properties = {}
 # Unless we sort index before downloading item files,
 # order of every batch will be overridden by file modification date.
 for item in sorted(product_index, key=itemgetter('article')):
-    item_file_path = os.path.join(folder, f"{item['id']}.json")
-    if (os.path.isfile(item_file_path)) and (os.path.getsize(item_file_path) > 0):
+    product = Product(item['id'])
+    if len(product.files_downloaded) > 0:
+        item_file_path = product.files_downloaded[-1]
         item_file = open(item_file_path)
         product_properties = json.load(item_file)
         if item['price'] == product_properties['price']:
             # print(f"{item['id']} details already downloaded")
             product_properties['item_file_path'] = item_file_path
+            product_properties['item_timestamp'] = product.latest_file_datetime
             properties[item['id']] = product_properties
             continue
 
     print(f"Downloading details of {item['id']}: {item['title']}")
+    product.ensure_path_exists()
+    item_file_path = product.create_new_filename()
     r = requests.get(item['url'])
     html_contents = r.text
     soup = BeautifulSoup(html_contents, 'html.parser')  
@@ -97,6 +102,7 @@ for item in sorted(product_index, key=itemgetter('article')):
     with open(item_file_path, "w", encoding='utf-8') as item_file:
         json.dump(product_properties, item_file, indent=2)
     product_properties['item_file_path'] = item_file_path
+    product_properties['item_timestamp'] = product.latest_file_datetime
     properties[item['id']] = product_properties
 
 
@@ -132,7 +138,7 @@ for item in product_index:
     for image_data in properties[item['id']]['erp_images']:
         n_item['images'].append(f"https://veikals.banknote.lv/storage/{image_data['path']}")
         
-    n_item['timestamp'] = datetime.fromtimestamp(os.path.getmtime(properties[item['id']]['item_file_path'])).isoformat()
+    n_item['timestamp'] = properties[item['id']]['item_timestamp'].isoformat()
 
     normalized_inventory.append(n_item)
 

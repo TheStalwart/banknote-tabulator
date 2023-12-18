@@ -1,0 +1,71 @@
+import os
+import pathlib
+from datetime import datetime
+import shutil
+import glob
+import pytz
+
+
+class Product:
+    FILENAME_FORMAT = "%Y-%m-%d_%H-%M-%S.json"
+
+    @property
+    def inventory_path(self):
+        return os.path.join(pathlib.Path(__file__).parent.resolve(), "inventory")
+    
+    @property
+    def path(self):
+        return os.path.join(self.inventory_path, "products", f"{self.id}", '')
+    
+    def ensure_path_exists(self):
+        if not os.path.isdir(self.path):
+            os.mkdir(self.path)
+    
+    @property
+    def files_downloaded(self):
+        """Files in storage for a particular Product. Returns array of absolute paths"""
+        def is_not_empty_file(path):
+            return os.path.getsize(path) > 0
+
+        return list(filter(is_not_empty_file, glob.glob(os.path.join(self.path, "*.json"))))
+    
+    @property
+    def latest_file_datetime(self):
+        latest_file_path = self.files_downloaded[-1]
+        latest_file_name = os.path.basename(latest_file_path)
+        return datetime.strptime(f"{latest_file_name}Z", f"{self.FILENAME_FORMAT}%z")
+    
+    def create_new_filename(self):
+        """Create filename to dump created/updated product JSON"""
+        new_filename = datetime.now().strftime(self.FILENAME_FORMAT)
+        print(f"[Product {self.id}]: creating file {new_filename}")
+        return os.path.join(self.path, new_filename)
+    
+    @property
+    def legacy_filename(self):
+        return f"{self.id}.json"
+    
+    @property
+    def legacy_path(self):
+        return os.path.join(self.inventory_path, self.legacy_filename)
+    
+    def migrate_legacy_data(self):
+        # Data scraped from Banknote doesn't contain product creation/update timestamp.
+        # Instead, i used file's modification time to add the value to the table.
+        # That is very fragile in itself, and i'd like to introduce price history feature later.
+        # So we migrate the existing files to store timestamp in a filename.
+        legacy_file_timestamp = os.path.getmtime(self.legacy_path)
+        legacy_file_datetime = datetime.fromtimestamp(legacy_file_timestamp, tz=pytz.timezone('GMT'))
+        migrated_filename = legacy_file_datetime.strftime(self.FILENAME_FORMAT)
+        print(f"[Product {self.id}]: migrating legacy file {self.legacy_filename} timestamped {legacy_file_timestamp} to {migrated_filename}")
+        migrated_path = os.path.join(self.path, migrated_filename)
+        self.ensure_path_exists()
+        shutil.move(self.legacy_path, migrated_path)
+
+    def __init__(self, id):
+        self.id = id
+
+        if (os.path.isfile(self.legacy_path)) and (os.path.getsize(self.legacy_path) > 0):
+            self.migrate_legacy_data()
+
+
