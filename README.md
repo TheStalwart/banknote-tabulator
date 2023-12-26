@@ -10,8 +10,17 @@ at [banknote.retromultiplayer.com](https://banknote.retromultiplayer.com/)
 
 
 ## Development environment
+
+### Docker-based
 To refresh inventory, run download-products.py:
 `docker-compose up downloader`
 
 To run a local web server at http://127.0.0.1:3000:
 `docker-compose up web`
+
+### venv-based
+To create venv:
+`python3 -m venv .venv && .venv/bin/pip install -r requirements.txt`
+
+To refresh inventory:
+`.venv/bin/python3 download-products.py`
