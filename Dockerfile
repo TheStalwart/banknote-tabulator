@@ -2,7 +2,5 @@ FROM python:3-alpine
 
 WORKDIR /app
 
-RUN pip install --no-cache-dir \
-    pytz \
-    requests \
-    bs4
+COPY requirements.txt /tmp/
+RUN pip install --no-cache-dir -r /tmp/requirements.txt
