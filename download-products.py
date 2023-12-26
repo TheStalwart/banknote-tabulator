@@ -129,6 +129,9 @@ for item in product_index:
             n_item['gpu'] = entry['value'].strip(' -"')
 
     address_components = item['branche']['address'].split('<br>')
+    if len(address_components) < 2:
+        address_components = item['branche']['address'].split(',')
+
     n_item['city'] = address_components[0].strip(' ,')
     n_item['local_address'] = address_components[1].strip(' ,')
 
