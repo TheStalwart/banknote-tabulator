@@ -7,6 +7,8 @@ import pytz
 
 
 class Product:
+    FOLDER_NAME = 'products'
+
     TIMESTAMP_FORMAT = "%Y-%m-%d_%H-%M-%S"
     FILENAME_FORMAT = f"{TIMESTAMP_FORMAT}.json"
 
@@ -16,7 +18,7 @@ class Product:
     
     @property
     def path(self):
-        return os.path.join(self.inventory_path, "products", f"{self.id}", '')
+        return os.path.join(self.inventory_path, self.FOLDER_NAME, f"{self.id}", '')
     
     def ensure_path_exists(self):
         if not os.path.isdir(self.path):
