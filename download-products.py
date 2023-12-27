@@ -9,6 +9,7 @@ import re
 import pathlib
 from operator import itemgetter
 from product import Product
+from banknote import Banknote
 
 
 # Keep cache of entire inventory in RAM
@@ -44,6 +45,7 @@ def download_index():
         json.dump(product_index, index_file, indent=2)
         return os.path.getmtime(index_file_path)
 
+inventory = Banknote(folder)
 
 # Update inventory index if necessary
 if not os.path.isfile(index_file_path):
@@ -152,3 +154,5 @@ inventory_dictionary = {
 }
 with open(normalized_file_path, "w", encoding='utf-8') as normalized_file:
     json.dump(inventory_dictionary, normalized_file, indent=2)
+
+inventory.delete_legacy_data()
