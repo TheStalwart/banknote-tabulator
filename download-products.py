@@ -150,3 +150,4 @@ with open(inventory.normalized_file_path, "w", encoding='utf-8') as normalized_f
     json.dump(inventory_dictionary, normalized_file, indent=2)
 
 inventory.delete_legacy_data()
+inventory.archive_inventory()
