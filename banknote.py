@@ -8,6 +8,14 @@ import time
 class Banknote:
     """Scrape and normalize inventory of veikals.banknote.lv"""
 
+    @property
+    def normalized_file_name(self):
+        return 'normalized.json'
+    
+    @property
+    def normalized_file_path(self):
+        return os.path.join(self.path, self.normalized_file_name)
+
     def delete_legacy_data(self):
         """Delete legacy files older than 30 days"""
 

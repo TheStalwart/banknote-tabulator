@@ -109,8 +109,6 @@ for item in sorted(product_index, key=itemgetter('article')):
 
 
 # Normalize data for use in frontend
-normalized_file_name = "normalized.json"
-normalized_file_path = os.path.join(folder, normalized_file_name)
 normalized_inventory = []
 for item in product_index:
     n_item = { 'article': item['article'] }
@@ -147,12 +145,12 @@ for item in product_index:
 
     normalized_inventory.append(n_item)
 
-print(f"Dumping {len(normalized_inventory)} products to {normalized_file_path}")
+print(f"Dumping {len(normalized_inventory)} products to {inventory.normalized_file_path}")
 inventory_dictionary = {
     'index_file_modification_timestamp': index_file_modification_timestamp,
     'inventory': normalized_inventory,
 }
-with open(normalized_file_path, "w", encoding='utf-8') as normalized_file:
+with open(inventory.normalized_file_path, "w", encoding='utf-8') as normalized_file:
     json.dump(inventory_dictionary, normalized_file, indent=2)
 
 inventory.delete_legacy_data()
