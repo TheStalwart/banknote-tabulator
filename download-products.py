@@ -19,9 +19,7 @@ product_index = []
 # Define inventory file storage paths
 root = pathlib.Path(__file__).parent.resolve()
 folder = os.path.join(root, "inventory")
-index_file_name = "index.json"
-index_file_path = os.path.join(folder, index_file_name)
-
+inventory = Banknote(folder)
 
 def download_index():
     print("Downloading first page...")
@@ -40,31 +38,29 @@ def download_index():
         product_index.extend(extra_page['data'])
 
     # https://www.geeksforgeeks.org/reading-and-writing-json-to-a-file-in-python/
-    print(f"Dumping {len(product_index)} products to {index_file_path}")
-    with open(index_file_path, "w") as index_file:
+    print(f"Dumping {len(product_index)} products to {inventory.index_file_path}")
+    with open(inventory.index_file_path, "w") as index_file:
         json.dump(product_index, index_file, indent=2)
-        return os.path.getmtime(index_file_path)
-
-inventory = Banknote(folder)
+        return os.path.getmtime(inventory.index_file_path)
 
 # Update inventory index if necessary
-if not os.path.isfile(index_file_path):
+if not os.path.isfile(inventory.index_file_path):
     index_file_modification_timestamp = download_index()
 else:
     try:
         # Check index file age
         INDEX_FILE_MAX_AGE_MINUTES = 55
-        index_file_modification_timestamp = os.path.getmtime(index_file_path)
+        index_file_modification_timestamp = os.path.getmtime(inventory.index_file_path)
         current_timestamp = time.time()
         index_file_age_seconds = current_timestamp - index_file_modification_timestamp
         index_file_age_minutes = math.floor(index_file_age_seconds / 60)
         print(f"Index file is {index_file_age_minutes} minutes old")
 
         if index_file_age_minutes < INDEX_FILE_MAX_AGE_MINUTES:
-            print(f"Loading inventory from {index_file_name}")
-            index_file = open(index_file_path)
+            print(f"Loading inventory from {inventory.index_file_name}")
+            index_file = open(inventory.index_file_path)
             product_index = json.load(index_file)
-            print(f"Loaded {len(product_index)} products from {index_file_path}")
+            print(f"Loaded {len(product_index)} products from {inventory.index_file_path}")
         else:
             index_file_modification_timestamp = download_index()
     except:

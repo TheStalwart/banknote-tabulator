@@ -9,6 +9,14 @@ class Banknote:
     """Scrape and normalize inventory of veikals.banknote.lv"""
 
     @property
+    def index_file_name(self):
+        return 'index.json'
+    
+    @property
+    def index_file_path(self):
+        return os.path.join(self.path, self.index_file_name)
+
+    @property
     def normalized_file_name(self):
         return 'normalized.json'
     
