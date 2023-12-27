@@ -30,7 +30,7 @@ class Product:
         def is_not_empty_file(path):
             return os.path.getsize(path) > 0
 
-        return list(filter(is_not_empty_file, glob.glob(os.path.join(self.path, "*.json"))))
+        return list(sorted(filter(is_not_empty_file, glob.glob(os.path.join(self.path, "*.json")))))
     
     @property
     def latest_file_datetime(self):
