@@ -7,7 +7,8 @@ import pytz
 
 
 class Product:
-    FILENAME_FORMAT = "%Y-%m-%d_%H-%M-%S.json"
+    TIMESTAMP_FORMAT = "%Y-%m-%d_%H-%M-%S"
+    FILENAME_FORMAT = f"{TIMESTAMP_FORMAT}.json"
 
     @property
     def inventory_path(self):
