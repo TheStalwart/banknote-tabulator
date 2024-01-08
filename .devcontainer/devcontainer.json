@@ -3,9 +3,10 @@
     "customizations": {
         "vscode": {
             "extensions": [
-                "ms-python.python"
+                "ms-python.python",
+                "eamodio.gitlens"
             ]
         }
     },
-    "postCreateCommand": "wget https://banknote.retromultiplayer.com/inventory/archives/latest.zip -O /tmp/latest.zip && unzip /tmp/latest.zip -d inventory/ && rm /tmp/latest.zip",
+    "postCreateCommand": "wget https://banknote.retromultiplayer.com/inventory/archives/latest.zip -O /tmp/latest.zip && unzip /tmp/latest.zip -d inventory/ && rm /tmp/latest.zip"
 }
