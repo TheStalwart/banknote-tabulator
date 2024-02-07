@@ -28,14 +28,17 @@ class Banknote:
         return os.path.join(self.path, self.normalized_file_name)
     
     @property
+    def archives_path(self):
+        return os.path.join(self.path, 'archives')
+    
+    @property
     def product_root(self):
         return os.path.join(self.path, Product.FOLDER_NAME)
 
     def archive_inventory(self):
         """Create new zip archive with contents of inventory"""
-        archives_path = os.path.join(self.path, 'archives')
         new_zipfile_name = 'new.zip'
-        new_zipfile_path = os.path.join(archives_path, new_zipfile_name)
+        new_zipfile_path = os.path.join(self.archives_path, new_zipfile_name)
 
         # Remove any unfinished zipfiles from previous executions
         if os.path.isfile(new_zipfile_path):
@@ -54,12 +57,12 @@ class Banknote:
 
         # Rename latest to timestamped
         latest_zipfile_name = 'latest.zip'
-        latest_zipfile_path = os.path.join(archives_path, latest_zipfile_name)
+        latest_zipfile_path = os.path.join(self.archives_path, latest_zipfile_name)
         if os.path.isfile(latest_zipfile_path):
             latest_zipfile_timestamp = os.path.getmtime(latest_zipfile_path)
             latest_zipfile_datetime = datetime.fromtimestamp(latest_zipfile_timestamp, tz=pytz.timezone('GMT'))
             timestamped_zipfile_name = latest_zipfile_datetime.strftime(f"{Product.TIMESTAMP_FORMAT}.zip")
-            timestamped_zipfile_path = os.path.join(archives_path, timestamped_zipfile_name)
+            timestamped_zipfile_path = os.path.join(self.archives_path, timestamped_zipfile_name)
             print(f"{self.log_tag} Found {latest_zipfile_path}, moving to {timestamped_zipfile_path}")
             shutil.move(latest_zipfile_path, timestamped_zipfile_path)
 
@@ -79,6 +82,18 @@ class Banknote:
             if time.time() - legacy_file_timestamp > 60 * 60 * 24 * 30: # if older than 30 days
                 print(f"{self.log_tag} Deleting legacy file {legacy_file_path} timestamped {legacy_file_datetime}")
                 os.remove(legacy_file_path)
+
+    def prune_archive_folder(self):
+        """Delete older archives to limit disk space they are taking"""
+        archive_size_cap_mb = 2048 # 2 GB
+        glob_pattern = os.path.join(self.archives_path, "[0-9]*.zip")
+        archive_file_paths = sorted(glob.glob(glob_pattern))
+
+        # https://stackoverflow.com/questions/1392413/calculating-a-directorys-size-using-python
+        while sum(os.path.getsize(f) for f in archive_file_paths) / 1024 / 1024 > archive_size_cap_mb:
+            victim_path = archive_file_paths.pop(0)
+            print(f"{self.log_tag} Total archive size exceeds {archive_size_cap_mb} MB, deleting {victim_path}")
+            os.remove(victim_path)
 
     def __init__(self, path):
         self.path = path
