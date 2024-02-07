@@ -4,6 +4,7 @@ from datetime import datetime
 import shutil
 import glob
 import pytz
+import hashlib
 
 
 class Product:
@@ -65,10 +66,27 @@ class Product:
         self.ensure_path_exists()
         shutil.move(self.legacy_path, migrated_path)
 
+    def delete_duplicate_data(self):
+        """There was a bug earlier that resulted in some product folders 
+        containing multiple json files with identical data.
+
+        This function deletes duplicate json files keeping only the oldest one.
+        """
+        checksums = []
+        for file_path in self.files_downloaded:
+            file_md5 = hashlib.md5(open(file_path,'rb').read()).hexdigest()
+            if file_md5 in checksums:
+                print(f"[Product {self.id}]: Deleting duplicate data file: {file_path} with MD5 {file_md5}")
+                os.remove(file_path)
+            else:
+                checksums.append(file_md5)
+
     def __init__(self, id):
         self.id = id
 
         if (os.path.isfile(self.legacy_path)) and (os.path.getsize(self.legacy_path) > 0):
             self.migrate_legacy_data()
+        
+        self.delete_duplicate_data()
 
 
