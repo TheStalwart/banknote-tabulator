@@ -203,4 +203,8 @@ function loadInventory() {
     });
 
     table.on("rowClick", rowClickHandler);
+
+    document.getElementById("resetFiltersButton").onclick = function(){
+        table.clearFilter(true);
+    }
 }
