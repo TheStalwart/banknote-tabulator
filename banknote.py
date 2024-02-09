@@ -35,6 +35,11 @@ class Banknote:
     def product_root(self):
         return os.path.join(self.path, Product.FOLDER_NAME)
 
+    @property
+    def product_cache_count(self):
+        """Count product cache folders downloaded"""
+        return len(list(glob.glob(os.path.join(self.product_root, "[0-9]*"))))
+
     def archive_inventory(self):
         """Create new zip archive with contents of inventory"""
         new_zipfile_name = 'new.zip'
