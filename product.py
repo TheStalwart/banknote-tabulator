@@ -15,10 +15,16 @@ class Product:
 
     @property
     def inventory_path(self):
+        """
+        Path of an inventory 
+        that is a root for specific product data directories
+        and index files
+        """
         return os.path.join(pathlib.Path(__file__).parent.resolve(), "inventory")
     
     @property
     def path(self):
+        """Path of a specific product data directory"""
         return os.path.join(self.inventory_path, self.FOLDER_NAME, f"{self.id}", '')
     
     def ensure_path_exists(self):
