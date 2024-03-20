@@ -78,6 +78,7 @@ properties = {}
 for item in sorted(product_index, key=itemgetter('article')):
     product = Product(item['id'])
     if len(product.files_downloaded) > 0:
+        product.update_last_seen_value()
         item_file_path = product.files_downloaded[-1]
         item_file = open(item_file_path)
         product_properties = json.load(item_file)
@@ -102,6 +103,7 @@ for item in sorted(product_index, key=itemgetter('article')):
     product_properties['item_file_path'] = item_file_path
     product_properties['item_timestamp'] = product.latest_file_datetime
     properties[item['id']] = product_properties
+    product.update_last_seen_value()
 
 
 # Normalize data for use in frontend

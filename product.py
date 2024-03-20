@@ -87,6 +87,18 @@ class Product:
             else:
                 checksums.append(file_md5)
 
+    @property
+    def last_seen_file_path(self):
+        """Absolute path of file holding last_seen_value"""
+        return os.path.join(self.path, "last_seen")
+
+    def update_last_seen_value(self):
+        """Update last seen date value in product data folder"""
+        value_string = datetime.now().strftime(self.TIMESTAMP_FORMAT)
+        # print(f"[Product {self.id}]: Writing value string {value_string} to path {self.last_seen_file_path}")
+        with open(self.last_seen_file_path, "w") as last_seen_file:
+            last_seen_file.write(value_string)
+
     def __init__(self, id):
         self.id = id
 
