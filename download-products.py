@@ -31,11 +31,13 @@ def download_index():
     last_page_number = first_page['last_page']
     print(f"Total amount of pages: {last_page_number}")
 
+    print(f"Downloading page:", end='', flush=True)
     for page_number in range(2, last_page_number+1):
-        print(f"Downloading page #{page_number}")
+        print(f" #{page_number}", end='', flush=True)
         r = requests.get('https://veikals.banknote.lv/lv/filter-products', params={'categories': 8, 'page': page_number})
         extra_page = r.json()
         product_index.extend(extra_page['data'])
+    print(f" DONE!", flush=True)
 
     # https://www.geeksforgeeks.org/reading-and-writing-json-to-a-file-in-python/
     print(f"Dumping {len(product_index)} products to {inventory.index_file_path}")
