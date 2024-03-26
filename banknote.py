@@ -32,6 +32,16 @@ class Banknote:
         return os.path.join(self.path, 'archives')
     
     @property
+    def archive_count(self):
+        """The amount of archive files in archives_path
+
+        Counts both timestamped archives,
+        e.g. "archives/2024-03-26_09-35-21.zip",
+        and "archives/latest.zip"
+        """
+        return len(list(glob.glob(os.path.join(self.archives_path, "[0-9l]*.zip"))))
+    
+    @property
     def product_root(self):
         return os.path.join(self.path, Product.FOLDER_NAME)
 
@@ -99,6 +109,11 @@ class Banknote:
             victim_path = archive_file_paths.pop(0)
             print(f"{self.log_tag} Total archive size exceeds {archive_size_cap_mb} MB, deleting {victim_path}")
             os.remove(victim_path)
+
+    def print_stats(self):
+        """Print various stats and indicators about inventory"""
+        print(f"{self.log_tag} Total items in product cache: {self.product_cache_count}")
+        print(f"{self.log_tag} Total archives: {self.archive_count}")
 
     def __init__(self, path):
         self.path = path

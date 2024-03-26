@@ -151,8 +151,8 @@ inventory_dictionary = {
 with open(inventory.normalized_file_path, "w", encoding='utf-8') as normalized_file:
     json.dump(inventory_dictionary, normalized_file, indent=2)
 
-print(f"Total items in product cache: {inventory.product_cache_count}")
-
 inventory.delete_legacy_data()
 inventory.prune_archive_folder()
 inventory.archive_inventory()
+
+inventory.print_stats()
