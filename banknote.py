@@ -110,6 +110,19 @@ class Banknote:
             print(f"{self.log_tag} Total archive size exceeds {archive_size_cap_mb} MB, deleting {victim_path}")
             os.remove(victim_path)
 
+    def prune_products_folder(self):
+        """Delete data of products with unknown last_seen value"""
+        product_folders_deleted = 0
+        product_paths = list(glob.glob(os.path.join(self.product_root, "[0-9]*")))
+        for product_path in product_paths:
+            last_seen_path = os.path.join(product_path, "last_seen")
+            if not os.path.isfile(last_seen_path):
+                product_folders_deleted += 1
+                print(f"{self.log_tag} Found product data folder {product_path} with no last_seen file, deleting")
+                shutil.rmtree(product_path)
+        if product_folders_deleted > 0:
+            print(f"{self.log_tag} Total product data folders with no last_seen file deleted: {product_folders_deleted}")
+
     def print_stats(self):
         """Print various stats and indicators about inventory"""
         print(f"{self.log_tag} Total items in product cache: {self.product_cache_count}")
