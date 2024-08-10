@@ -24,3 +24,8 @@ To create venv:
 
 To refresh inventory:
 `.venv/bin/python3 download-products.py`
+
+### DevContainer-based
+`.devcontainer/devcontainer.json` contains a `postCreateCommand` that will attempt to download and unpack database archive from production instance to avoid doing a full scrape. 
+
+The easiest way to create a development environment is to use GitHub Codespaces.
