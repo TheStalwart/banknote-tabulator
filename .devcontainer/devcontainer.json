@@ -4,6 +4,7 @@
         "vscode": {
             "extensions": [
                 "ms-python.python",
+                "ms-azuretools.vscode-docker",
                 "eamodio.gitlens"
             ]
         }
