@@ -9,5 +9,5 @@
             ]
         }
     },
-    "postCreateCommand": "wget https://banknote.retromultiplayer.com/inventory/archives/latest.zip -O /tmp/latest.zip && unzip /tmp/latest.zip -d inventory/ && rm /tmp/latest.zip"
+    "postCreateCommand": "wget https://banknote.retromultiplayer.com/inventory/archives/latest.zip -O /tmp/latest.zip && unzip -n -v /tmp/latest.zip -d inventory/ && rm /tmp/latest.zip"
 }
