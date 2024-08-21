@@ -28,4 +28,7 @@ To refresh inventory:
 ### DevContainer-based
 `.devcontainer/devcontainer.json` contains a `postCreateCommand` that will attempt to download and unpack database archive from production instance to avoid doing a full scrape. 
 
+To run HTTPd in DevContainer:
+`python -m http.server 8080`
+
 The easiest way to create a development environment is to use GitHub Codespaces.
