@@ -183,6 +183,19 @@ function loadInventory() {
             {title:"Price", field:"price", 
                 width: 70,
                 hozAlign:"right",
+                sorter:function(a, b, aRow, bRow, column, dir, sorterParams){
+                    //a, b - the two values being compared
+                    //aRow, bRow - the row components for the values being compared (useful if you need to access additional fields in the row data for the sort)
+                    //column - the column component for the column being sorted
+                    //dir - the direction of the sort ("asc" or "desc")
+                    //sorterParams - sorterParams object from column definition array
+
+                    /*
+                        Not sure why i need to define a custom sorter,
+                        but by default the values are compared as strings.
+                    */
+                    return a - b;
+                },
                 headerFilter: minMaxFilterEditor, 
                 headerFilterFunc: minMaxFilterFunction, 
                 headerFilterLiveFilter: false},
