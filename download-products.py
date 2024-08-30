@@ -10,6 +10,23 @@ import pathlib
 from operator import itemgetter
 from product import Product
 from banknote import Banknote
+import sentry_sdk
+
+
+# Init Sentry before doing anything that might raise exception
+try:
+    sentry_sdk.init(
+        dsn=pathlib.Path(os.path.join(pathlib.Path(__file__).parent.resolve(), "sentry.dsn")).read_text(),
+        # Set traces_sample_rate to 1.0 to capture 100%
+        # of transactions for tracing.
+        traces_sample_rate=1.0,
+        # Set profiles_sample_rate to 1.0 to profile 100%
+        # of sampled transactions.
+        # We recommend adjusting this value in production.
+        profiles_sample_rate=1.0,
+    )
+except:
+    pass
 
 
 # Keep cache of entire inventory in RAM
