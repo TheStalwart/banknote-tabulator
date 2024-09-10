@@ -90,7 +90,7 @@ else:
 # Load additional properties absent in index
 properties = {}
 # If multiple items are added to inventory between downloader executions,
-# download item files in the order of "article", 
+# download item files in the order of "article",
 # to avoid listing these items in order reverse of item addition to inventory.
 # Unless we sort index before downloading item files,
 # order of every batch will be overridden by file modification date.
@@ -114,7 +114,7 @@ for item in sorted(product_index, key=itemgetter('article')):
     print(f"Fetching {item['url']}...")
     r = requests.get(item['url'])
     html_contents = r.text
-    soup = BeautifulSoup(html_contents, 'html.parser')  
+    soup = BeautifulSoup(html_contents, 'html.parser')
     leasing_item = soup.find('product-item-leasing')
     if leasing_item:
         product_data = leasing_item[':product']
@@ -162,7 +162,7 @@ for item in product_index:
     n_item['images'] = []
     for image_data in properties[item['id']]['erp_images']:
         n_item['images'].append(f"https://veikals.banknote.lv/storage/{image_data['path']}")
-        
+
     n_item['timestamp'] = properties[item['id']]['item_timestamp'].isoformat()
 
     normalized_inventory.append(n_item)
