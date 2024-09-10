@@ -111,18 +111,23 @@ for item in sorted(product_index, key=itemgetter('article')):
     print(f"Downloading details of {item['id']}: {item['title']}")
     product.ensure_path_exists()
     item_file_path = product.create_new_filename()
+    print(f"Fetching {item['url']}...")
     r = requests.get(item['url'])
     html_contents = r.text
     soup = BeautifulSoup(html_contents, 'html.parser')  
     leasing_item = soup.find('product-item-leasing')
-    product_data = leasing_item[':product']
-    product_properties = json.loads(product_data)
-    with open(item_file_path, "w", encoding='utf-8') as item_file:
-        json.dump(product_properties, item_file, indent=2)
-    product_properties['item_file_path'] = item_file_path
-    product_properties['item_timestamp'] = product.latest_file_datetime
-    properties[item['id']] = product_properties
-    product.update_last_seen_value()
+    if leasing_item:
+        product_data = leasing_item[':product']
+        product_properties = json.loads(product_data)
+        with open(item_file_path, "w", encoding='utf-8') as item_file:
+            json.dump(product_properties, item_file, indent=2)
+        product_properties['item_file_path'] = item_file_path
+        product_properties['item_timestamp'] = product.latest_file_datetime
+        properties[item['id']] = product_properties
+        product.update_last_seen_value()
+    else:
+        print(f"Page of ttem {item['id']} does not contain item information, removing from index")
+        product_index.remove(item)
 
 
 # Normalize data for use in frontend
