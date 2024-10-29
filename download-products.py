@@ -115,9 +115,19 @@ for item in sorted(product_index, key=itemgetter('article')):
     r = requests.get(item['url'])
     html_contents = r.text
     soup = BeautifulSoup(html_contents, 'html.parser')
+
+    product_data = None
+
+    # Old frontend template (before Oct 9 2024)
     leasing_item = soup.find('product-item-leasing')
-    if leasing_item:
+    if leasing_item.has_key(':product'):
         product_data = leasing_item[':product']
+    else:
+        # New frontend template (since Oct 9 2024)
+        buy_now_btn = soup.find('buy-now-btn')
+        product_data = buy_now_btn[':product']
+
+    if product_data:
         product_properties = json.loads(product_data)
         with open(item_file_path, "w", encoding='utf-8') as item_file:
             json.dump(product_properties, item_file, indent=2)
