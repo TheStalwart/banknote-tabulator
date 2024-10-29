@@ -1,0 +1,9 @@
+{
+    "recommendations": [
+        "DavidAnson.vscode-markdownlint",
+        "eamodio.gitlens",
+        "ms-azuretools.vscode-docker",
+        "ms-python.python",
+        "yzhang.markdown-all-in-one"
+    ]
+}
