@@ -125,6 +125,10 @@ for item in sorted(product_index, key=itemgetter('article')):
     else:
         # New frontend template (since Oct 9 2024)
         buy_now_btn = soup.find('buy-now-btn')
+        if buy_now_btn == None:
+            print(f"Page for {item['id']} has no info, probably sold, removing from index")
+            product_index.remove(item)
+            continue
         product_data = buy_now_btn[':product']
 
     if product_data:
