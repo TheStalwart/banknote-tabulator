@@ -112,7 +112,10 @@ for item in sorted(product_index, key=itemgetter('article')):
     product.ensure_path_exists()
     item_file_path = product.create_new_filename()
     print(f"Fetching {item['url']}...")
-    r = requests.get(item['url'])
+    r = requests.get(item['url'], allow_redirects=False)
+    if r.status_code == 301:
+        print(f"Redirected to {r.headers['Location']}, skipping")
+        continue
     html_contents = r.text
     soup = BeautifulSoup(html_contents, 'html.parser')
 
