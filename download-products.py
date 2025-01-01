@@ -114,7 +114,8 @@ for item in sorted(product_index, key=itemgetter('article')):
     print(f"Fetching {item['url']}...")
     r = requests.get(item['url'], allow_redirects=False)
     if r.status_code == 301:
-        print(f"Redirected to {r.headers['Location']}, skipping")
+        print(f"Redirected to {r.headers['Location']}, removing from index")
+        product_index.remove(item)
         continue
     html_contents = r.text
     soup = BeautifulSoup(html_contents, 'html.parser')
