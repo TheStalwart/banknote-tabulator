@@ -120,7 +120,7 @@ for item in sorted(product_index, key=itemgetter('article')):
 
     # Old frontend template (before Oct 9 2024)
     leasing_item = soup.find('product-item-leasing')
-    if leasing_item.has_attr(':product'):
+    if leasing_item != None and leasing_item.has_attr(':product'):
         product_data = leasing_item[':product']
     else:
         # New frontend template (since Oct 9 2024)
