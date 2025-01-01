@@ -26,6 +26,9 @@ To create venv:
 To refresh inventory:
 `.venv/bin/python3 download-products.py`
 
+Optionally set the delay in seconds between HTTP requests:
+`.venv/bin/python3 download-products.py --delay=20`
+
 ### DevContainer-based
 
 `.devcontainer/devcontainer.json` contains a `postCreateCommand` that will attempt to download and unpack database archive from production instance to avoid doing a full scrape.

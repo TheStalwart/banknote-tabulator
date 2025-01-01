@@ -38,6 +38,12 @@ root = pathlib.Path(__file__).parent.resolve()
 folder = os.path.join(root, "inventory")
 inventory = Banknote(folder)
 
+# get delay in seconds from cli options, like "--delay=20", default = 15
+delay = 15
+for arg in sys.argv:
+    if arg.startswith("--delay="):
+        delay = int(arg.split("=")[1])
+
 def download_index():
     print("Downloading first page...")
     # https://requests.readthedocs.io/en/latest/user/quickstart/#passing-parameters-in-urls
@@ -112,6 +118,10 @@ for item in sorted(product_index, key=itemgetter('article')):
     product.ensure_path_exists()
     item_file_path = product.create_new_filename()
     print(f"Fetching {item['url']}...")
+    
+    print(f"Sleeping for {delay} seconds to avoid blocking")
+    time.sleep(delay)
+
     r = requests.get(item['url'], allow_redirects=False)
     if r.status_code == 301:
         print(f"Redirected to {r.headers['Location']}, removing from index")
