@@ -5,7 +5,11 @@
 		}
 	],
 	"settings": {
-		"files.trimTrailingWhitespace": true
+		"files.trimTrailingWhitespace": true,
+		"files.associations": {
+			// stop markdownlint from complaining about a plain text LICENSE file
+			"LICENSE": "plaintext"
+		},
 	},
 	"launch": {
 		"version": "0.2.0",
