@@ -6,6 +6,11 @@
 	],
 	"settings": {
 		"files.trimTrailingWhitespace": true,
+		"[jsonc]": {
+			"editor.formatOnSave": true,
+			"editor.tabSize": 2,
+			"editor.defaultFormatter": "vscode.json-language-features"
+		},
 		"files.associations": {
 			// stop markdownlint from complaining about a plain text LICENSE file
 			"LICENSE": "plaintext"
