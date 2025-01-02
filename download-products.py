@@ -11,6 +11,7 @@ from operator import itemgetter
 from product import Product
 from banknote import Banknote
 import sentry_sdk
+import sys
 
 
 # Init Sentry before doing anything that might raise exception
@@ -31,7 +32,6 @@ except:
 
 # Keep cache of entire inventory in RAM
 product_index = []
-
 
 # Define inventory file storage paths
 root = pathlib.Path(__file__).parent.resolve()
@@ -57,6 +57,9 @@ def download_index():
     print(f"Downloading page:", end='', flush=True)
     for page_number in range(2, last_page_number+1):
         print(f" #{page_number}", end='', flush=True)
+        if delay > 0:
+            print(f"... ", end='', flush=True)
+            time.sleep(delay)
         r = requests.get('https://veikals.banknote.lv/lv/filter-products', params={'categories': 8, 'page': page_number})
         extra_page = r.json()
         product_index.extend(extra_page['data'])
@@ -119,8 +122,9 @@ for item in sorted(product_index, key=itemgetter('article')):
     item_file_path = product.create_new_filename()
     print(f"Fetching {item['url']}...")
     
-    print(f"Sleeping for {delay} seconds to avoid blocking")
-    time.sleep(delay)
+    if delay > 0:
+        print(f"Sleeping for {delay} seconds to avoid blocking")
+        time.sleep(delay)
 
     r = requests.get(item['url'], allow_redirects=False)
     if r.status_code == 301:
