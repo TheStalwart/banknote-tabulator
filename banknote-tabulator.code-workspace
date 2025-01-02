@@ -16,6 +16,16 @@
 				"request": "launch",
 				"program": "download-products.py",
 				"console": "integratedTerminal"
+			},
+			{
+				"name": "Python Debugger: download-products.py (delay: 30)",
+				"type": "debugpy",
+				"request": "launch",
+				"program": "download-products.py",
+				"console": "integratedTerminal",
+				"args": [
+					"--delay=30"
+				],
 			}
 		]
 	}
