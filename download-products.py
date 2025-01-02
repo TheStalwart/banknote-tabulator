@@ -46,8 +46,10 @@ for arg in sys.argv:
 
 def download_index():
     print("Downloading first page...")
+    index_url = 'https://veikals.banknote.lv/lv/filter-products'
+    index_params = {'categories_id': 8, 'per_page': 120}
     # https://requests.readthedocs.io/en/latest/user/quickstart/#passing-parameters-in-urls
-    r = requests.get('https://veikals.banknote.lv/lv/filter-products', params={'categories': 8, 'page': 1})
+    r = requests.get(index_url, params={**index_params, 'page': 1})
     first_page = r.json()
     product_index.extend(first_page['data'])
 
@@ -60,7 +62,7 @@ def download_index():
         if delay > 0:
             print(f"... ", end='', flush=True)
             time.sleep(delay)
-        r = requests.get('https://veikals.banknote.lv/lv/filter-products', params={'categories': 8, 'page': page_number})
+        r = requests.get(index_url, params={**index_params, 'page': page_number})
         extra_page = r.json()
         product_index.extend(extra_page['data'])
     print(f" DONE!", flush=True)
