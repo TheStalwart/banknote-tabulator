@@ -84,7 +84,7 @@ function loadInventory() {
         ).join('')
 
         let popupHtml = `
-            <div class="modal-gallery" style="overflow: auto; overflow: auto; white-space: nowrap;" 
+            <div class="modal-gallery" style="overflow: auto; overflow: auto; white-space: nowrap;"
                 onWheel="this.scrollLeft+=event.deltaY>0?100:-100"> <!-- https://stackoverflow.com/questions/18481308/set-mouse-wheel-to-horizontal-scroll-using-css -->
                 ${imageHTML}
             </div>
@@ -105,14 +105,14 @@ function loadInventory() {
     };
 
     var banknoteInventoryURL = "inventory/normalized.json"
-    
+
     var timestampTrustThreshold = moment(0) // failsafe value that doesn't affect sorting
     var initialScrapeDurationEstimate = moment.duration(30, 'minutes');
 
     table = new Tabulator("#example-table", {
         index:"id",
         initialSort:[
-            {column:"timestamp", dir:"desc"}, 
+            {column:"timestamp", dir:"desc"},
         ],
         ajaxURL: banknoteInventoryURL,
         ajaxResponse:function(url, params, response){
@@ -132,7 +132,7 @@ function loadInventory() {
             return response['inventory'];
         },
         columns: [
-            {title:"SKU", field:"article", headerFilter: true, 
+            {title:"SKU", field:"article", headerFilter: true,
                 sorter:"number",
                 hozAlign:"right",
                 headerSortStartingDir:"desc",
@@ -170,7 +170,7 @@ function loadInventory() {
                     //cell - the cell component
                     //formatterParams - parameters set for the column
                     //onRendered - function to call when the formatter has been rendered
-                    
+
                     var itemTimestamp = moment(cell.getValue())
 
                     if (itemTimestamp > timestampTrustThreshold) {
@@ -180,7 +180,7 @@ function loadInventory() {
                     }
                 }},
             {title:"Title", field:"title", headerFilter: true},
-            {title:"Price", field:"price", 
+            {title:"Price", field:"price",
                 width: 70,
                 hozAlign:"right",
                 sorter:function(a, b, aRow, bRow, column, dir, sorterParams){
@@ -196,8 +196,8 @@ function loadInventory() {
                     */
                     return a - b;
                 },
-                headerFilter: minMaxFilterEditor, 
-                headerFilterFunc: minMaxFilterFunction, 
+                headerFilter: minMaxFilterEditor,
+                headerFilterFunc: minMaxFilterFunction,
                 headerFilterLiveFilter: false},
             {title:"CPU", field:"cpu", headerFilter: true},
             {title:"RAM", field:"ram", headerFilter: true},

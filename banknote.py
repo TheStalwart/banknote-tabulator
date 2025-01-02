@@ -14,7 +14,7 @@ class Banknote:
     @property
     def index_file_name(self):
         return 'index.json'
-    
+
     @property
     def index_file_path(self):
         return os.path.join(self.path, self.index_file_name)
@@ -22,15 +22,15 @@ class Banknote:
     @property
     def normalized_file_name(self):
         return 'normalized.json'
-    
+
     @property
     def normalized_file_path(self):
         return os.path.join(self.path, self.normalized_file_name)
-    
+
     @property
     def archives_path(self):
         return os.path.join(self.path, 'archives')
-    
+
     @property
     def archive_count(self):
         """The amount of archive files in archives_path
@@ -40,7 +40,7 @@ class Banknote:
         and "archives/latest.zip"
         """
         return len(list(glob.glob(os.path.join(self.archives_path, "[0-9l]*.zip"))))
-    
+
     @property
     def product_root(self):
         return os.path.join(self.path, Product.FOLDER_NAME)

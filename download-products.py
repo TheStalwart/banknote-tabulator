@@ -123,7 +123,7 @@ for item in sorted(product_index, key=itemgetter('article')):
     product.ensure_path_exists()
     item_file_path = product.create_new_filename()
     print(f"Fetching {item['url']}...")
-    
+
     if delay > 0:
         print(f"Sleeping for {delay} seconds to avoid blocking")
         time.sleep(delay)

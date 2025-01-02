@@ -16,21 +16,21 @@ class Product:
     @property
     def inventory_path(self):
         """
-        Path of an inventory 
+        Path of an inventory
         that is a root for specific product data directories
         and index files
         """
         return os.path.join(pathlib.Path(__file__).parent.resolve(), "inventory")
-    
+
     @property
     def path(self):
         """Path of a specific product data directory"""
         return os.path.join(self.inventory_path, self.FOLDER_NAME, f"{self.id}", '')
-    
+
     def ensure_path_exists(self):
         if not os.path.isdir(self.path):
             os.mkdir(self.path)
-    
+
     @property
     def files_downloaded(self):
         """Files in storage for a particular Product. Returns array of absolute paths"""
@@ -38,27 +38,27 @@ class Product:
             return os.path.getsize(path) > 0
 
         return list(sorted(filter(is_not_empty_file, glob.glob(os.path.join(self.path, "*.json")))))
-    
+
     @property
     def latest_file_datetime(self):
         latest_file_path = self.files_downloaded[-1]
         latest_file_name = os.path.basename(latest_file_path)
         return datetime.strptime(f"{latest_file_name}Z", f"{self.FILENAME_FORMAT}%z")
-    
+
     def create_new_filename(self):
         """Create filename to dump created/updated product JSON"""
         new_filename = datetime.now().strftime(self.FILENAME_FORMAT)
         print(f"[Product {self.id}]: creating file {new_filename}")
         return os.path.join(self.path, new_filename)
-    
+
     @property
     def legacy_filename(self):
         return f"{self.id}.json"
-    
+
     @property
     def legacy_path(self):
         return os.path.join(self.inventory_path, self.legacy_filename)
-    
+
     def migrate_legacy_data(self):
         # Data scraped from Banknote doesn't contain product creation/update timestamp.
         # Instead, i used file's modification time to add the value to the table.
@@ -73,7 +73,7 @@ class Product:
         shutil.move(self.legacy_path, migrated_path)
 
     def delete_duplicate_data(self):
-        """There was a bug earlier that resulted in some product folders 
+        """There was a bug earlier that resulted in some product folders
         containing multiple json files with identical data.
 
         This function deletes duplicate json files keeping only the oldest one.
@@ -104,7 +104,7 @@ class Product:
 
         if (os.path.isfile(self.legacy_path)) and (os.path.getsize(self.legacy_path) > 0):
             self.migrate_legacy_data()
-        
+
         self.delete_duplicate_data()
 
 
