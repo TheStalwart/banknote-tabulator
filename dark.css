@@ -7,7 +7,10 @@ body {
     background-color: rgb(58, 58, 60);
 }
 
-a:link, a:visited, a:hover, a:active {
+a:link,
+a:visited,
+a:hover,
+a:active {
     color: rgb(10, 132, 255);
 }
 
@@ -16,7 +19,7 @@ a:link, a:visited, a:hover, a:active {
 }
 
 .swal2-modal {
-    background: rgb(70, 70, 74)!important;
+    background: rgb(70, 70, 74) !important;
 }
 
 .swal2-title {
@@ -24,5 +27,5 @@ a:link, a:visited, a:hover, a:active {
 }
 
 .popup-title-price {
-    color: white!important;
+    color: white !important;
 }
