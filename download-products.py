@@ -29,6 +29,13 @@ try:
 except:
     pass
 
+# prevent multiple instances of the script from running at the same time
+lock_file_path = os.path.join(pathlib.Path(__file__).parent.resolve(), "download-products.lock")
+if os.path.isfile(lock_file_path):
+    print("Another instance of the script is running, exiting")
+    sys.exit(1)
+else:
+    open(lock_file_path, "w").close()
 
 # Keep cache of entire inventory in RAM
 product_index = []
@@ -215,3 +222,5 @@ inventory.prune_archive_folder()
 inventory.archive_inventory()
 
 inventory.print_stats()
+
+os.remove(lock_file_path)
