@@ -32,10 +32,13 @@ except:
 # prevent multiple instances of the script from running at the same time
 lock_file_path = os.path.join(pathlib.Path(__file__).parent.resolve(), "download-products.lock")
 if os.path.isfile(lock_file_path):
-    print("Another instance of the script is running, exiting")
-    sys.exit(1)
-else:
-    open(lock_file_path, "w").close()
+    # if lockfile is older than 24h, recreate it
+    if os.path.getmtime(lock_file_path) < time.time() - 60 * 60 * 24:
+        os.remove(lock_file_path)
+    else:
+        print("Another instance of the script is running, exiting")
+        sys.exit(1)
+open(lock_file_path, "w").close()
 
 # Keep cache of entire inventory in RAM
 product_index = []
