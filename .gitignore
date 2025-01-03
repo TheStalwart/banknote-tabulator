@@ -1,4 +1,5 @@
 sentry.dsn
+download-products.lock
 
 .venv/
 
