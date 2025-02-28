@@ -1,0 +1,22 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Python Debugger: download-products.py",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "download-products.py",
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "Python Debugger: download-products.py (delay: 30)",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "download-products.py",
+      "console": "integratedTerminal",
+      "args": [
+        "--delay=30"
+      ],
+    }
+  ]
+}
