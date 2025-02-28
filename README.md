@@ -8,6 +8,16 @@ among other UI/UX mortal sins.
 I'm hosting an instance
 at [banknote.retromultiplayer.com](https://banknote.retromultiplayer.com/)
 
+## Sentry.io SDK integration
+
+To enable [Sentry.io SDK](https://docs.sentry.io/platforms/python/),
+create `sentry.dsn` file with Client Key (DSN) in the root of the project.
+
+## Better Stack heartbeat monitor
+
+To enable [Better Stack heartbeat monitor](https://betterstack.com/docs/uptime/cron-and-heartbeat-monitor/),
+create `heartbeat.url` file with heartbeat URL in the root of the project.
+
 ## Development environment
 
 ### Docker-based

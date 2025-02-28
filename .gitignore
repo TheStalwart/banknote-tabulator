@@ -1,4 +1,5 @@
 sentry.dsn
+heartbeat.url
 download-products.lock
 
 .venv/

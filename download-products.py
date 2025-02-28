@@ -29,6 +29,15 @@ try:
 except:
     pass
 
+def report_failure_and_exit():
+    if betterstack_heartbeat_url:
+        print(f"Reporting heartbeat to {betterstack_heartbeat_url}/fail")
+        response = requests.get(f"{betterstack_heartbeat_url}/fail")
+        if not response.ok:
+            print(f"Failed!")
+        print(f"Response: [{response.status_code}]")
+    sys.exit(1)
+
 # prevent multiple instances of the script from running at the same time
 lock_file_path = os.path.join(pathlib.Path(__file__).parent.resolve(), "download-products.lock")
 if os.path.isfile(lock_file_path):
@@ -37,7 +46,7 @@ if os.path.isfile(lock_file_path):
         os.remove(lock_file_path)
     else:
         print("Another instance of the script is running, exiting")
-        sys.exit(1)
+        report_failure_and_exit()
 open(lock_file_path, "w").close()
 
 # Keep cache of entire inventory in RAM
@@ -47,6 +56,13 @@ product_index = []
 root = pathlib.Path(__file__).parent.resolve()
 folder = os.path.join(root, "inventory")
 inventory = Banknote(folder)
+
+# Attempt to load Better Stack heartbeat token
+betterstack_heartbeat_url = None
+try:
+    betterstack_heartbeat_url = pathlib.Path(os.path.join(root, "heartbeat.url")).read_text().strip()
+except:
+    pass
 
 # get delay in seconds from cli options, like "--delay=20", default = 15
 delay = 15
@@ -227,3 +243,11 @@ inventory.archive_inventory()
 inventory.print_stats()
 
 os.remove(lock_file_path)
+
+# Report success to Better Stack
+if betterstack_heartbeat_url:
+    print(f"Reporting heartbeat to {betterstack_heartbeat_url}")
+    response = requests.get(betterstack_heartbeat_url)
+    if not response.ok:
+        print(f"Failed!")
+    print(f"Response: [{response.status_code}]")
