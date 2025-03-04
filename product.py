@@ -20,7 +20,7 @@ class Product:
         that is a root for specific product data directories
         and index files
         """
-        return os.path.join(pathlib.Path(__file__).parent.resolve(), "inventory")
+        return os.path.join(pathlib.Path(__file__).parent.resolve(), "inventory", self.category_name)
 
     @property
     def path(self):
@@ -99,8 +99,9 @@ class Product:
         with open(self.last_seen_file_path, "w") as last_seen_file:
             last_seen_file.write(value_string)
 
-    def __init__(self, id):
+    def __init__(self, category_name, id):
         self.id = id
+        self.category_name = category_name
 
         if (os.path.isfile(self.legacy_path)) and (os.path.getsize(self.legacy_path) > 0):
             self.migrate_legacy_data()

@@ -1,6 +1,9 @@
 sentry.dsn
 heartbeat.url
-download-products.lock
+download-products*.lock
+
+# Override by `git add -f inventory/<file>`
+inventory/
 
 .venv/
 

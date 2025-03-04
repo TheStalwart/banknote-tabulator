@@ -1,4 +1,26 @@
-function loadInventory() {
+var categories = [
+    {
+        "name": "laptops",
+        "columns": [
+            {title: "CPU", field: "cpu", headerFilter: true},
+            {title: "RAM", field: "ram", headerFilter: true},
+            {title: "Storage", field: "storage", headerFilter: true},
+            {title: "GPU", field: "gpu", headerFilter: true}
+        ]
+    },
+    {
+        "name": "monitors",
+        "columns": [
+            {title: "Resolution", field: "resolution", headerFilter: true},
+            {title: "Size", field: "size", headerFilter: true},
+            {title: "Refresh rate", field: "refresh_rate", headerFilter: true},
+            {title: "Panel", field: "panel", headerFilter: true}
+        ]
+    }
+];
+var categoryNames = categories.map(category => category.name);
+
+function loadInventory(categoryName) {
     //custom max min header filter
     var minMaxFilterEditor = function(cell, onRendered, success, cancel, editorParams){
 
@@ -104,7 +126,12 @@ function loadInventory() {
         return null;
     };
 
-    var banknoteInventoryURL = "inventory/normalized.json"
+    if (!categoryNames.includes(categoryName)) {
+        categoryName = categoryNames[0];
+    }
+    var categoryColumns = categories.find(category => category.name == categoryName).columns;
+
+    var banknoteInventoryURL = `inventory/${categoryName}/normalized.json`;
 
     var timestampTrustThreshold = moment(0) // failsafe value that doesn't affect sorting
     var initialScrapeDurationEstimate = moment.duration(30, 'minutes');
@@ -199,20 +226,20 @@ function loadInventory() {
                 headerFilter: minMaxFilterEditor,
                 headerFilterFunc: minMaxFilterFunction,
                 headerFilterLiveFilter: false},
-            {title:"CPU", field:"cpu", headerFilter: true},
-            {title:"RAM", field:"ram", headerFilter: true},
-            {title:"Storage", field:"storage", headerFilter: true},
-            {title:"GPU", field:"gpu", headerFilter: true},
+            ]
+        .concat(categoryColumns)
+        .concat([
             {title:"City", field:"city", headerFilter: true},
             {title:"Address", field:"local_address", headerFilter: true},
             {title:"URL", field:"url", headerFilter: true, formatter: "link"},
-        ],
+        ]),
         movableColumns: true,
         persistence: {
             sort: true,
             headerFilter: true,
             columns: true,
         },
+        persistenceID: categoryName === "laptops" ? "example-table" : categoryName, // backwards compatibility
     });
 
     table.on("rowClick", rowClickHandler);
@@ -221,3 +248,41 @@ function loadInventory() {
         table.clearFilter(true);
     }
 }
+
+function toTitleCase(str) {
+    return str.replace(/\w\S*/g, function(txt) {
+        return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+    });
+}
+
+function switchMenu(categoryName) {
+    var categoryMenu = document.getElementById("category-menu");
+    var element = categoryMenu.children[categoryNames.indexOf(categoryName)];
+
+    window.history.pushState({}, "", element.getAttribute("href"));
+    for (var i = 0; i < categoryMenu.children.length; i++) {
+        categoryMenu.children[i].classList.remove("active");
+    }
+    element.classList.add("active");
+    loadInventory(categoryName);
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    var categoryMenu = document.getElementById("category-menu");
+    categoryMenu.innerHTML = categories.map(category => `
+        <a class="category-tab" href="?category=${category.name}" data-category="${category.name}">${toTitleCase(category.name)}</a>
+    `).join(' ');
+
+    categoryMenu.onclick = function(event) {
+        if (event.target.classList.contains("category-tab")) {
+            event.preventDefault();
+            switchMenu(event.target.getAttribute("data-category"));
+        }
+    }
+
+    var category = (new URLSearchParams(window.location.search)).get('category');
+    if (category === null) {
+        category = categoryNames[0];
+    }
+    switchMenu(category);
+});

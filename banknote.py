@@ -128,6 +128,7 @@ class Banknote:
         print(f"{self.log_tag} Total items in product cache: {self.product_cache_count}")
         print(f"{self.log_tag} Total archives: {self.archive_count}")
 
-    def __init__(self, path):
-        self.path = path
-        self.log_tag = '[Banknote]'
+    def __init__(self, path, category_name):
+        self.path = os.path.join(path, category_name)
+        self.log_tag = '[Banknote/{}]'.format(category_name)
+        self.category_name = category_name

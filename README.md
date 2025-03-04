@@ -47,3 +47,32 @@ To run HTTPd in DevContainer:
 `python -m http.server 8080`
 
 The easiest way to create a development environment is to use GitHub Codespaces.
+
+## Configuring categories
+
+The script supports multiple categories. To add new ones:
+
+1. In `download-products.py`:
+   1. Edit the `known_categories` list somewhere at the top.
+   2. Edit the `normalize_product` function right below the list.
+2. In `banknote-tabulator.js`, edit the `categories` array at the top.
+
+Make sure the category and field names match.
+
+## Storage
+
+The products are saved in plain JSON files, sorted by categories:
+
+```plaintext
+inventory/
+    <CATEGORY NAME>/
+        archives/
+            <DATE AND TIME>.zip
+            latest.zip
+        products/
+            <ID>/
+                <DATE AND TIME>.json
+                last_seen
+    <OTHER CATEGORY NAME>/
+        ...
+```
