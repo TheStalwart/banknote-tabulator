@@ -13,13 +13,18 @@
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
         <script type="text/javascript" src="banknote-tabulator.js"></script>
-        <link href="dark.css" rel="stylesheet" media="(prefers-color-scheme: dark)">
+        <link href="style.css" rel="stylesheet"">
     </head>
-    <body onload="loadInventory()">
-        <div>
-            <button id="resetFiltersButton">Reset all filters</button>
-            Index updated: <span id="last_index_refresh"></span>
-            <a href="https://github.com/TheStalwart/banknote-tabulator">https://github.com/TheStalwart/banknote-tabulator</a>
+    <body>
+        <div class="menu-container">
+            <div class="category-menu" id="category-menu"></div>
+            <div class="menu-tools">
+                <button id="resetFiltersButton">Reset all filters</button>
+                <span>Index updated: <span id="last_index_refresh">...</span></span>
+                <a href="https://github.com/TheStalwart/banknote-tabulator" title="Source on GitHub">
+                    https://github.com/TheStalwart/banknote-tabulator
+                </a>
+            </div>
         </div>
 
         <div id="example-table" style="width: 100%; height: 95%"></div>
