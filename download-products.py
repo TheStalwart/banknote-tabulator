@@ -192,10 +192,10 @@ for inventory in inventories:
                 product_index = json.load(index_file)
                 print(f"{log_tag} Loaded {len(product_index)} products from {inventory.index_file_path}")
             else:
-                index_file_modification_timestamp = download_index()
+                product_index, index_file_modification_timestamp = download_index(inventory)
         except:
             print(f"{log_tag} Failed to parse index file, redownloading")
-            index_file_modification_timestamp = download_index()
+            product_index, index_file_modification_timestamp = download_index(inventory)
 
 
     # Load additional properties absent in index
