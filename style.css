@@ -1,0 +1,69 @@
+.menu-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.category-menu {
+    display: flex;
+    border-bottom: 1px solid #ccc;
+}
+
+.category-tab {
+    padding: 10px 20px;
+    text-decoration: none;
+    border: 1px solid #ccc;
+    border-bottom: none;
+    border-radius: 5px 5px 0 0;
+    margin-right: 5px;
+    background-color: #f1f1f1;
+}
+
+.category-tab.active {
+    background-color: #fff;
+    border-bottom: 1px solid #fff;
+}
+
+.menu-tools {
+    display: flex;
+    align-items: center;
+}
+
+.menu-tools>span,
+.menu-tools>a {
+    margin-left: 10px;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        color-scheme: dark;
+    }
+
+    body {
+        color: white;
+        background-color: rgb(58, 58, 60);
+    }
+
+    a:link,
+    a:visited,
+    a:hover,
+    a:active {
+        color: rgb(10, 132, 255);
+    }
+
+    .modal-gallery {
+        background-color: rgb(70, 70, 74);
+    }
+
+    .swal2-modal {
+        background: rgb(70, 70, 74) !important;
+    }
+
+    .swal2-title {
+        color: lightgray;
+    }
+
+    .popup-title-price {
+        color: white !important;
+    }
+}
