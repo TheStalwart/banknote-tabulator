@@ -1,3 +1,4 @@
+import itertools
 import os
 import glob
 from datetime import datetime
@@ -66,7 +67,7 @@ class Banknote:
             new_zipfile.write(self.normalized_file_path, self.normalized_file_name)
             product_paths = list(glob.glob(os.path.join(self.product_root, "[0-9]*")))
             for product_path in product_paths:
-                product_file_paths = list(glob.glob(os.path.join(product_path, '*.json')))
+                product_file_paths = itertools.chain(glob.iglob(os.path.join(product_path, '*.json')), glob.iglob(os.path.join(product_path, Product.LAST_SEEN_FILE_NAME)))
                 for product_file_path in product_file_paths:
                     new_zipfile.write(product_file_path, os.path.relpath(product_file_path, self.path))
 
