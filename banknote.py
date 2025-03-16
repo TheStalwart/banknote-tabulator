@@ -115,7 +115,7 @@ class Banknote:
         product_folders_deleted = 0
         product_paths = list(glob.glob(os.path.join(self.product_root, "[0-9]*")))
         for product_path in product_paths:
-            last_seen_path = os.path.join(product_path, "last_seen")
+            last_seen_path = os.path.join(product_path, Product.LAST_SEEN_FILE_NAME)
             if not os.path.isfile(last_seen_path):
                 product_folders_deleted += 1
                 print(f"{self.log_tag} Found product data folder {product_path} with no last_seen file, deleting")

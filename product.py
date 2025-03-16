@@ -87,10 +87,12 @@ class Product:
             else:
                 checksums.append(file_md5)
 
+    LAST_SEEN_FILE_NAME = "last_seen"
+
     @property
     def last_seen_file_path(self):
         """Absolute path of file holding last_seen_value"""
-        return os.path.join(self.path, "last_seen")
+        return os.path.join(self.path, __class__.LAST_SEEN_FILE_NAME)
 
     def update_last_seen_value(self):
         """Update last seen date value in product data folder"""
