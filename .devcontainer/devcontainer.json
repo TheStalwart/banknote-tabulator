@@ -12,5 +12,5 @@
             ]
         }
     },
-    "postCreateCommand": "wget https://banknote.retromultiplayer.com/inventory/archives/latest.zip -O /tmp/latest.zip && unzip -n -v /tmp/latest.zip -d inventory/ && rm /tmp/latest.zip"
+    "postCreateCommand": "wget https://banknote.retromultiplayer.com/inventory/laptops/archives/latest.zip -O /tmp/laptops.zip && unzip -n /tmp/laptops.zip -d inventory/laptops/ && rm /tmp/laptops.zip && wget https://banknote.retromultiplayer.com/inventory/monitors/archives/latest.zip -O /tmp/monitors.zip && unzip -n /tmp/monitors.zip -d inventory/monitors/ && rm /tmp/monitors.zip"
 }
