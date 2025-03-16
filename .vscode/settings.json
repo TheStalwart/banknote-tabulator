@@ -14,4 +14,24 @@
     // stop markdownlint from complaining about a plain text LICENSE file
     "LICENSE": "plaintext"
   },
+  "workbench.colorCustomizations": {
+    "activityBar.activeBackground": "#58d13c",
+    "activityBar.background": "#58d13c",
+    "activityBar.foreground": "#15202b",
+    "activityBar.inactiveForeground": "#15202b99",
+    "activityBarBadge.background": "#4a64d4",
+    "activityBarBadge.foreground": "#e7e7e7",
+    "commandCenter.border": "#15202b99",
+    "sash.hoverBorder": "#58d13c",
+    "statusBar.background": "#43b02a",
+    "statusBar.foreground": "#15202b",
+    "statusBarItem.hoverBackground": "#338720",
+    "statusBarItem.remoteBackground": "#43b02a",
+    "statusBarItem.remoteForeground": "#15202b",
+    "titleBar.activeBackground": "#43b02a",
+    "titleBar.activeForeground": "#15202b",
+    "titleBar.inactiveBackground": "#43b02a99",
+    "titleBar.inactiveForeground": "#15202b99"
+  },
+  "peacock.color": "#43b02a",
 }
