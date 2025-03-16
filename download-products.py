@@ -31,6 +31,13 @@ try:
 except:
     pass
 
+# Attempt to load Better Stack heartbeat token
+betterstack_heartbeat_url = None
+try:
+    betterstack_heartbeat_url = pathlib.Path(os.path.join(pathlib.Path(__file__).parent.resolve(), "heartbeat.url")).read_text().strip()
+except:
+    pass
+
 def report_failure_and_exit():
     if betterstack_heartbeat_url:
         print(f"Reporting heartbeat to {betterstack_heartbeat_url}/fail")
@@ -127,13 +134,6 @@ if not os.path.isfile(os.path.join(folder, first_category_name, "index.json")):
             print(f"Moving {product_dir} to {new_dir_name}")
             shutil.move(product_dir, new_dir_name)
     print("Migration done")
-
-# Attempt to load Better Stack heartbeat token
-betterstack_heartbeat_url = None
-try:
-    betterstack_heartbeat_url = pathlib.Path(os.path.join(root, "heartbeat.url")).read_text().strip()
-except:
-    pass
 
 def download_index(inventory):
     log_tag = "[DL/{}]".format(inventory.category_name)
