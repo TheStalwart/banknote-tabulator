@@ -61,26 +61,26 @@ known_categories = [
 def normalize_product(category_name, specs):
     normalized = {}
     for entry in specs:
-        entry['value'] = entry['value'].replace('\n', '').replace('\t', '').replace('&nbsp;', ' ')
+        entry['value'] = entry['value'].replace('\n', '').replace('\t', '').replace('&nbsp;', ' ').strip(' -,|"')
         if category_name == 'laptops':
-            if re.search('(cpu|proces)', entry['title'], re.IGNORECASE) and (len(entry['value'].strip(' -,')) > 0):
-                normalized['cpu'] = entry['value'].strip(' -,')
+            if re.search('(cpu|proces)', entry['title'], re.IGNORECASE) and (len(entry['value']) > 0):
+                normalized['cpu'] = entry['value']
             elif re.search('(ram)', entry['title'], re.IGNORECASE):
-                normalized['ram'] = entry['value'].strip()
+                normalized['ram'] = entry['value']
             elif re.search('(atmi|disk|hdd|ssd)', entry['title'], re.IGNORECASE) and not re.search('(oper|las)', entry['title'], re.IGNORECASE):
                 # avoid "Diska lasītājs" key
-                normalized['storage'] = entry['value'].strip()
+                normalized['storage'] = entry['value']
             elif re.search('(gpu|video)', entry['title'], re.IGNORECASE):
-                normalized['gpu'] = entry['value'].strip(' -"')
+                normalized['gpu'] = entry['value']
         elif category_name == 'monitors':
-            if re.search('(izšķirtspēja)', entry['title'], re.IGNORECASE) and (len(entry['value'].strip(' ')) > 0):
-                normalized['resolution'] = entry['value'].replace(' x ', 'x').strip(' ')
-            elif re.search('(izmērs)', entry['title'], re.IGNORECASE) and (len(entry['value'].strip(' ')) > 0):
-                normalized['size'] = entry['value'].strip(' ')
-            elif re.search('(frekvence)', entry['title'], re.IGNORECASE) and (len(entry['value'].strip(' ')) > 0):
-                normalized['refresh_rate'] = entry['value'].strip(' ')
-            elif re.search('(tips)', entry['title'], re.IGNORECASE) and (len(entry['value'].strip(' ')) > 0):
-                normalized['panel'] = entry['value'].strip(' ')
+            if re.search('(izšķirtspēja)', entry['title'], re.IGNORECASE) and (len(entry['value']) > 0):
+                normalized['resolution'] = entry['value'].replace(' x ', 'x')
+            elif re.search('(izmērs)', entry['title'], re.IGNORECASE) and (len(entry['value']) > 0):
+                normalized['size'] = entry['value']
+            elif re.search('(frekvence)', entry['title'], re.IGNORECASE) and (len(entry['value']) > 0):
+                normalized['refresh_rate'] = entry['value']
+            elif re.search('(tips)', entry['title'], re.IGNORECASE) and (len(entry['value']) > 0):
+                normalized['panel'] = entry['value']
     return normalized
 
 # get cli options: --delay=15 in seconds; --categories=laptops,monitors
