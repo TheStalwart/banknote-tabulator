@@ -23,10 +23,10 @@ create `heartbeat.url` file with heartbeat URL in the root of the project.
 ### Docker-based
 
 To refresh inventory, run download-products.py:
-`docker-compose up downloader`
+`docker compose up downloader`
 
 To run a local web server at <http://127.0.0.1:3000>:
-`docker-compose up web`
+`docker compose up web`
 
 ### venv-based
 
