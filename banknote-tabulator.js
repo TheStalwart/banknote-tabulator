@@ -323,6 +323,19 @@ function loadInventory(categoryName) {
 
     document.getElementById("resetFiltersButton").onclick = function(){
         table.clearFilter(true);
+
+        if (window.location.search) {
+            var url = new URL(window.location.href);
+            var currentParams = new URLSearchParams(window.location.search);
+            // It skips one param without toArray() 🤷
+            for (const [key] of currentParams.entries().toArray()) {
+                if (key.startsWith("headerFilter")) {
+                    currentParams.delete(key);
+                }
+            }
+            url.search = currentParams.toString();
+            window.history.pushState({}, "", url);
+        }
     }
 }
 
