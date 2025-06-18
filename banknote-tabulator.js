@@ -295,12 +295,8 @@ function loadInventory(categoryName) {
 
             // Read from query parameter first, then from default storage
             // Ignore persistence ID, use the current category as context
-            const typeFromUrl = getListObjectFieldFromUrl(type);
-            if (typeFromUrl !== null) {
-                return typeFromUrl;
-            }
-
-            return Tabulator.moduleBindings.persistence.readers[persistenceMode](id, type);
+            return getListObjectFieldFromUrl(type)
+                ?? Tabulator.moduleBindings.persistence.readers[persistenceMode](id, type);
         },
         persistenceWriterFunc: function (id, type, data){
             // id - tables persistence id
@@ -309,8 +305,12 @@ function loadInventory(categoryName) {
 
             // If the type is in the query parameters, don't write to storage
             // Ignore persistence ID, use the current category as context
-            return getListObjectFieldFromUrl(type)
-                ?? Tabulator.moduleBindings.persistence.writers[persistenceMode](id, type, data);
+            const typeFromUrl = getListObjectFieldFromUrl(type);
+            if (typeFromUrl !== null) {
+                return;
+            }
+
+            Tabulator.moduleBindings.persistence.writers[persistenceMode](id, type, data);
         },
     });
 
