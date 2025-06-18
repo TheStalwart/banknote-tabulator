@@ -336,7 +336,13 @@ function switchMenu(categoryName) {
     var categoryMenu = document.getElementById("category-menu");
     var element = categoryMenu.children[categoryNames.indexOf(categoryName)];
 
-    window.history.pushState({}, "", element.getAttribute("href"));
+    // construct the URL with category from selected category + current query parameters
+    var url = new URL(window.location.origin + element.getAttribute("href"));
+    var currentParams = new URLSearchParams(window.location.search);
+    currentParams.set('category', categoryName);
+    url.search = currentParams.toString();
+
+    window.history.pushState({}, "", url);
     for (var i = 0; i < categoryMenu.children.length; i++) {
         categoryMenu.children[i].classList.remove("active");
     }
@@ -357,7 +363,10 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    var category = (new URLSearchParams(window.location.search)).get('category');
+    var category = null;
+    if (window.location.search) {
+        category = (new URLSearchParams(window.location.search)).get('category');
+    }
     if (category === null) {
         category = categoryNames[0];
     }
