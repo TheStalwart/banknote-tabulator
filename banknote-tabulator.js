@@ -136,6 +136,56 @@ function loadInventory(categoryName) {
     var timestampTrustThreshold = moment(0) // failsafe value that doesn't affect sorting
     var initialScrapeDurationEstimate = moment.duration(30, 'minutes');
 
+    // a copy from Tabulator's src since it's inaccessible here
+    function localStorageTest() {
+        const testKey = "_tabulator_test";
+
+        try {
+            window.localStorage.setItem(testKey,testKey);
+            window.localStorage.removeItem(testKey);
+            return true;
+        } catch (e) {
+            return false;
+        }
+    }
+
+    const persistenceMode = localStorageTest() ? "local" : "cookie";
+
+    /**
+     * Treat the query param value as a list of form values, not JSON,
+     * e.g., headerFilter[0]["field"]="cpu"
+     *
+     * @param string fieldName
+     * @returns {any|null}
+     */
+    function getListObjectFieldFromUrl(fieldName) {
+        if (!window.location.search) {
+            return null;
+        }
+
+        const urlParams = new URLSearchParams(window.location.search);
+        var result = {};
+        var found = false;
+
+        for (const [key, value] of urlParams.entries()) {
+            const match = key.match(/^(\w+)\[(\d+)\]\[(\w+)\]$/);
+            if (match && match[1] === fieldName) {
+                if (!result[fieldName]) {
+                    result[fieldName] = [{}];
+                }
+                result[fieldName][match[2]][match[3]] = value;
+                found = true;
+            } else if (key === fieldName) {
+                return value;
+            }
+        }
+        if (found) {
+            return result[fieldName];
+        }
+
+        return null;
+    }
+
     table = new Tabulator("#example-table", {
         index:"id",
         initialSort:[
@@ -240,6 +290,33 @@ function loadInventory(categoryName) {
             columns: true,
         },
         persistenceID: categoryName === "laptops" ? "example-table" : categoryName, // backwards compatibility
+        persistenceReaderFunc: function (id, type) {
+            // id - tables persistence id
+            // type - type of data being persisted ("sort", "filter", "group", "page" or "columns")
+
+            // Read from query parameter first, then from default storage
+            // Ignore persistence ID, use the current category as context
+            const typeFromUrl = getListObjectFieldFromUrl(type);
+            if (typeFromUrl !== null) {
+                return typeFromUrl;
+            }
+
+            return Tabulator.moduleBindings.persistence.readers[persistenceMode](id, type);
+        },
+        persistenceWriterFunc: function (id, type, data){
+            // id - tables persistence id
+            // type - type of data being persisted ("sort", "filter", "group", "page" or "columns")
+            // data - array or object of data
+
+            // If the type is in the query parameters, don't write to storage
+            // Ignore persistence ID, use the current category as context
+            const typeFromUrl = getListObjectFieldFromUrl(type);
+            if (typeFromUrl !== null) {
+                return;
+            }
+
+            Tabulator.moduleBindings.persistence.writers[persistenceMode](id, type, data);
+        },
     });
 
     table.on("rowClick", rowClickHandler);
