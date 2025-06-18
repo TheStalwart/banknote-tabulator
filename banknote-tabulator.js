@@ -168,6 +168,10 @@ function loadInventory(categoryName) {
         var found = false;
 
         for (const [key, value] of urlParams.entries()) {
+            if (key === fieldName) {
+                return value;
+            }
+
             const match = key.match(/^(\w+)\[(\d+)\]\[(\w+)\]$/);
             if (match && match[1] === fieldName) {
                 if (!result[fieldName]) {
@@ -175,15 +179,10 @@ function loadInventory(categoryName) {
                 }
                 result[fieldName][match[2]][match[3]] = value;
                 found = true;
-            } else if (key === fieldName) {
-                return value;
             }
         }
-        if (found) {
-            return result[fieldName];
-        }
 
-        return null;
+        return found ? result[fieldName] : null;
     }
 
     table = new Tabulator("#example-table", {
@@ -310,12 +309,8 @@ function loadInventory(categoryName) {
 
             // If the type is in the query parameters, don't write to storage
             // Ignore persistence ID, use the current category as context
-            const typeFromUrl = getListObjectFieldFromUrl(type);
-            if (typeFromUrl !== null) {
-                return;
-            }
-
-            Tabulator.moduleBindings.persistence.writers[persistenceMode](id, type, data);
+            return getListObjectFieldFromUrl(type)
+                ?? Tabulator.moduleBindings.persistence.writers[persistenceMode](id, type, data);
         },
     });
 
