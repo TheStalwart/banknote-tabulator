@@ -305,12 +305,8 @@ function loadInventory(categoryName) {
 
             // If the type is in the query parameters, don't write to storage
             // Ignore persistence ID, use the current category as context
-            const typeFromUrl = getListObjectFieldFromUrl(type);
-            if (typeFromUrl !== null) {
-                return;
-            }
-
-            Tabulator.moduleBindings.persistence.writers[persistenceMode](id, type, data);
+            return getListObjectFieldFromUrl(type)
+                ?? Tabulator.moduleBindings.persistence.writers[persistenceMode](id, type);
         },
     });
 
