@@ -55,6 +55,7 @@ The script supports multiple categories. To add new ones:
 1. In `download-products.py`:
    1. Edit the `known_categories` list somewhere at the top.
    2. Edit the `normalize_product` function right below the list.
+   3. Edit the `categories_to_fetch` variable's default value.
 2. In `banknote-tabulator.js`, edit the `categories` array at the top.
 
 Make sure the category and field names match.
