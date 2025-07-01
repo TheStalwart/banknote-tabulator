@@ -53,6 +53,10 @@ known_categories = [
         'id': 8,
     },
     {
+        'name': 'desktops',
+        'id': 9,
+    },
+    {
         'name': 'monitors',
         'id': 11,
     }
@@ -62,7 +66,7 @@ def normalize_product(category_name, specs):
     normalized = {}
     for entry in specs:
         entry['value'] = entry['value'].replace('\n', '').replace('\t', '').replace('&nbsp;', ' ').strip(' -,|"')
-        if category_name == 'laptops':
+        if category_name == 'laptops' or category_name == 'desktops':
             if re.search('(cpu|proces)', entry['title'], re.IGNORECASE) and (len(entry['value']) > 0):
                 normalized['cpu'] = entry['value']
             elif re.search('(ram)', entry['title'], re.IGNORECASE):
@@ -72,6 +76,11 @@ def normalize_product(category_name, specs):
                 normalized['storage'] = entry['value']
             elif re.search('(gpu|video)', entry['title'], re.IGNORECASE):
                 normalized['gpu'] = entry['value']
+            # desktop-only here
+            elif re.search('(operētājsistēma)', entry['title'], re.IGNORECASE):
+                normalized['os'] = entry['value']
+            elif re.search('(mātes)', entry['title'], re.IGNORECASE):
+                normalized['motherboard'] = entry['value']
         elif category_name == 'monitors':
             if re.search('(izšķirtspēja)', entry['title'], re.IGNORECASE) and (len(entry['value']) > 0):
                 normalized['resolution'] = entry['value'].replace(' x ', 'x')
@@ -85,7 +94,7 @@ def normalize_product(category_name, specs):
 
 # get cli options: --delay=15 in seconds; --categories=laptops,monitors
 delay = 15
-categories_to_fetch = ["laptops", "monitors"]
+categories_to_fetch = ["laptops", "desktops", "monitors"]
 for arg in sys.argv:
     if arg.startswith("--delay="):
         delay = int(arg.split("=")[1])

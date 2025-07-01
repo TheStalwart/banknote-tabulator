@@ -9,6 +9,17 @@ var categories = [
         ]
     },
     {
+        "name": "desktops",
+        "columns": [
+            {title: "CPU", field: "cpu", headerFilter: true},
+            {title: "RAM", field: "ram", headerFilter: true},
+            {title: "Storage", field: "storage", headerFilter: true},
+            {title: "GPU", field: "gpu", headerFilter: true},
+            {title: "OS", field: "os", headerFilter: true},
+            {title: "Motherboard", field: "motherboard", headerFilter: true}
+        ]
+    },
+    {
         "name": "monitors",
         "columns": [
             {title: "Resolution", field: "resolution", headerFilter: true},
