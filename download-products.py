@@ -8,6 +8,7 @@ from bs4 import BeautifulSoup
 import re
 import pathlib
 from operator import itemgetter
+from banknote_client import BanknoteClient
 from product import Product
 from banknote import Banknote
 import sentry_sdk
@@ -143,6 +144,8 @@ if not os.path.isfile(os.path.join(folder, first_category_name, "index.json")):
             shutil.move(product_dir, new_dir_name)
     print("Migration done")
 
+banknote_client = BanknoteClient()
+
 def download_index(inventory):
     log_tag = "[DL/{}]".format(inventory.category_name)
     product_index = []
@@ -152,7 +155,7 @@ def download_index(inventory):
     category_id = next(c['id'] for c in known_categories if c['name'] == inventory.category_name)
     index_params = {'categories_id': category_id, 'per_page': 120}
     # https://requests.readthedocs.io/en/latest/user/quickstart/#passing-parameters-in-urls
-    r = requests.get(index_url, params={**index_params, 'page': 1})
+    r = banknote_client.get(index_url, params={**index_params, 'page': 1})
     first_page = r.json()
     product_index.extend(first_page['data'])
 
@@ -165,7 +168,7 @@ def download_index(inventory):
         if delay > 0:
             print(f"... ", end='', flush=True)
             time.sleep(delay)
-        r = requests.get(index_url, params={**index_params, 'page': page_number})
+        r = banknote_client.get(index_url, params={**index_params, 'page': page_number})
         extra_page = r.json()
         product_index.extend(extra_page['data'])
     print(f" DONE!", flush=True)
@@ -236,7 +239,7 @@ for inventory in inventories:
             print(f"{log_tag} Sleeping for {delay} seconds to avoid blocking")
             time.sleep(delay)
 
-        r = requests.get(item['url'], allow_redirects=False)
+        r = banknote_client.get(item['url'], allow_redirects=False)
         if r.status_code == 301:
             print(f"{log_tag} Redirected to {r.headers['Location']}, removing from index")
             product_index.remove(item)
@@ -268,7 +271,7 @@ for inventory in inventories:
             properties[item['id']] = product_properties
             product.update_last_seen_value()
         else:
-            print(f"{log_tag} Page of ttem {item['id']} does not contain item information, removing from index")
+            print(f"{log_tag} Page of item {item['id']} does not contain item information, removing from index")
             product_index.remove(item)
 
 
