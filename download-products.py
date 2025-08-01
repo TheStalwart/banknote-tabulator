@@ -66,7 +66,9 @@ def normalize_product(category_name, specs):
     normalized = {}
     for entry in specs:
         entry['value'] = entry['value'].replace('\n', '').replace('\t', '').replace('&nbsp;', ' ').strip(' -,|"')
-        if category_name == 'laptops' or category_name == 'desktops':
+        if re.search('(defekts)', entry['title'], re.IGNORECASE):
+            normalized['defect'] = entry['value']
+        elif category_name == 'laptops' or category_name == 'desktops':
             if re.search('(cpu|proces)', entry['title'], re.IGNORECASE) and (len(entry['value']) > 0):
                 normalized['cpu'] = entry['value']
             elif re.search('(ram)', entry['title'], re.IGNORECASE):

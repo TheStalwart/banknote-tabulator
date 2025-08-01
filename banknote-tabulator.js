@@ -289,6 +289,7 @@ function loadInventory(categoryName) {
             ]
         .concat(categoryColumns)
         .concat([
+            {title:"Defect", field:"defect", headerFilter: true},
             {title:"City", field:"city", headerFilter: true},
             {title:"Address", field:"local_address", headerFilter: true},
             {title:"URL", field:"url", headerFilter: true, formatter: "link"},
