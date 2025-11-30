@@ -119,8 +119,11 @@ if os.path.isfile(lock_file_path):
     if os.path.getmtime(lock_file_path) < time.time() - 60 * 60 * 24:
         os.remove(lock_file_path)
     else:
-        print("Another instance of the script is running, exiting")
-        report_failure_and_exit()
+        if sys.gettrace(): # https://stackoverflow.com/a/72977762/5337349
+            print("Lock file ignored due to debugging")
+        else:
+            print("Another instance of the script is running, exiting")
+            report_failure_and_exit()
 open(lock_file_path, "w").close()
 
 for category in known_categories:
