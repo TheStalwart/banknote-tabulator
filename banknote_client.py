@@ -1,9 +1,19 @@
 import requests
+from urllib3.util.retry import Retry
+from requests.adapters import HTTPAdapter
 
 class BanknoteClient:
     def __init__(self):
         # use session to preserve cookies, add some realistic browser headers
         self.session = requests.Session()
+
+        # Set up a Retry policy to avoid crashing on monthly DNS resolution failures
+        # https://stackoverflow.com/questions/23013220/max-retries-exceeded-with-url-in-requests
+        request_retry_config = Retry(total=5, backoff_factor=15)
+        http_adapter = HTTPAdapter(max_retries=request_retry_config)
+        self.session.mount('http://', http_adapter)
+        self.session.mount('https://', http_adapter)
+
         self.session.headers.update({
             'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8',
             'accept-language': 'en-GB,en;q=0.7',

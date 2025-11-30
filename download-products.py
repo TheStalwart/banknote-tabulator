@@ -41,7 +41,7 @@ except:
 def report_failure_and_exit():
     if betterstack_heartbeat_url:
         print(f"Reporting heartbeat to {betterstack_heartbeat_url}/fail")
-        response = requests.get(f"{betterstack_heartbeat_url}/fail")
+        response = banknote_client.get(f"{betterstack_heartbeat_url}/fail")
         if not response.ok:
             print(f"Failed!")
         print(f"Response: [{response.status_code}]")
@@ -329,7 +329,7 @@ os.remove(lock_file_path)
 # Report success to Better Stack
 if betterstack_heartbeat_url:
     print(f"Reporting heartbeat to {betterstack_heartbeat_url}")
-    response = requests.get(betterstack_heartbeat_url)
+    response = banknote_client.get(betterstack_heartbeat_url)
     if not response.ok:
         print(f"Failed!")
     print(f"Response: [{response.status_code}]")
