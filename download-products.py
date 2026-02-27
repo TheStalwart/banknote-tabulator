@@ -163,6 +163,26 @@ def download_index(inventory):
     index_url = 'https://veikals.banknote.lv/lv/filter-products'
     category_id = next(c['id'] for c in known_categories if c['name'] == inventory.category_name)
     index_params = {'categories_id': category_id, 'per_page': 120}
+
+    # helper to walk the category tree and return the node matching `id`
+    def find_category_node(nodes, target_id):
+        for node in nodes:
+            if node.get('id') == target_id:
+                return node
+            child = find_category_node(node.get('childrenCategories', []), target_id)
+            if child:
+                return child
+        return None
+
+    # Since Late February 2026,
+    # if a category contains childrenCategories
+    # replace categories_id value with a comma separated list of children category ids
+    node = find_category_node(product_categories, category_id)
+    if node:
+        children = node.get('childrenCategories', [])
+        if children:
+            index_params['categories_id'] = ",".join(str(c['id']) for c in children)
+
     # https://requests.readthedocs.io/en/latest/user/quickstart/#passing-parameters-in-urls
     r = banknote_client.get(index_url, params={**index_params, 'page': 1})
     first_page = r.json()
@@ -187,6 +207,18 @@ def download_index(inventory):
     with open(inventory.index_file_path, "w") as index_file:
         json.dump(product_index, index_file, indent=2)
     return product_index, os.path.getmtime(inventory.index_file_path)
+
+# On February 27th 2026 i discovered that laptop category (8)
+# now requires childrenCategories IDs passed to filter-products endpoint,
+# otherwise it only returns 3 products.
+# Desktops and monitors categories are unaffected.
+print(f"Fetching category structure")
+r = banknote_client.get('https://veikals.banknote.lv/')
+index_contents = r.text
+index_soup = BeautifulSoup(index_contents, 'html.parser')
+product_categories_item = index_soup.find('product-categories')
+product_categories_data = product_categories_item[':categories']
+product_categories = json.loads(product_categories_data)
 
 for inventory in inventories:
     # Keep cache of entire category inventory in RAM
