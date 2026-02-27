@@ -9,6 +9,26 @@
       "console": "integratedTerminal"
     },
     {
+      "name": "Python Debugger: laptops only",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "download-products.py",
+      "console": "integratedTerminal",
+      "args": [
+        "--categories=laptops"
+      ],
+    },
+    {
+      "name": "Python Debugger: desktops only",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "download-products.py",
+      "console": "integratedTerminal",
+      "args": [
+        "--categories=desktops"
+      ],
+    },
+    {
       "name": "Python Debugger: download-products.py (delay: 30)",
       "type": "debugpy",
       "request": "launch",
