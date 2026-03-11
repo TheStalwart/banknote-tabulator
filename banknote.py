@@ -1,4 +1,5 @@
 import itertools
+import math
 import os
 import glob
 from datetime import datetime
@@ -53,6 +54,26 @@ class Banknote:
 
     def archive_inventory(self):
         """Create new zip archive with contents of inventory"""
+
+        # Don't create new archives too often
+        SKIP_ARCHIVING_IF_LATEST_AGE_HOURS_LESS_THAN = 22
+
+        current_timestamp = time.time()
+
+        latest_zipfile_name = 'latest.zip'
+        latest_zipfile_path = os.path.join(self.archives_path, latest_zipfile_name)
+        latest_zipfile_timestamp = os.path.getmtime(latest_zipfile_path)
+        latest_zipfile_datetime = datetime.fromtimestamp(latest_zipfile_timestamp, tz=pytz.timezone('GMT'))
+        latest_zipfile_age_seconds = current_timestamp - latest_zipfile_timestamp
+        latest_zipfile_age_hours = math.floor(latest_zipfile_age_seconds / 60 / 60)
+        print(f"{self.log_tag} Latest archive file is {latest_zipfile_age_hours} hours old")
+
+        if latest_zipfile_age_hours < SKIP_ARCHIVING_IF_LATEST_AGE_HOURS_LESS_THAN:
+            print(f"{self.log_tag} Skipping archiving operation")
+            return
+
+        print(f"{self.log_tag} Creating new archive")
+
         new_zipfile_name = 'new.zip'
         new_zipfile_path = os.path.join(self.archives_path, new_zipfile_name)
 
@@ -72,11 +93,7 @@ class Banknote:
                     new_zipfile.write(product_file_path, os.path.relpath(product_file_path, self.path))
 
         # Rename latest to timestamped
-        latest_zipfile_name = 'latest.zip'
-        latest_zipfile_path = os.path.join(self.archives_path, latest_zipfile_name)
         if os.path.isfile(latest_zipfile_path):
-            latest_zipfile_timestamp = os.path.getmtime(latest_zipfile_path)
-            latest_zipfile_datetime = datetime.fromtimestamp(latest_zipfile_timestamp, tz=pytz.timezone('GMT'))
             timestamped_zipfile_name = latest_zipfile_datetime.strftime(f"{Product.TIMESTAMP_FORMAT}.zip")
             timestamped_zipfile_path = os.path.join(self.archives_path, timestamped_zipfile_name)
             print(f"{self.log_tag} Found {latest_zipfile_path}, moving to {timestamped_zipfile_path}")
