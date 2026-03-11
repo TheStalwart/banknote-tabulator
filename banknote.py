@@ -118,7 +118,7 @@ class Banknote:
 
     def prune_archive_folder(self):
         """Delete older archives to limit disk space they are taking"""
-        archive_size_cap_mb = 2048 # 2 GB
+        archive_size_cap_mb = 1024 # 1 GB
         glob_pattern = os.path.join(self.archives_path, "[0-9]*.zip")
         archive_file_paths = sorted(glob.glob(glob_pattern))
 
