@@ -1,0 +1,9 @@
+[Unit]
+Description=Run banknote tabulator product download every 6 hours
+
+[Timer]
+OnCalendar=*-*-* 00,06,12,18:00:00
+
+[Install]
+WantedBy=timers.target
+

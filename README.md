@@ -18,6 +18,13 @@ create `sentry.dsn` file with Client Key (DSN) in the root of the project.
 To enable [Better Stack heartbeat monitor](https://betterstack.com/docs/uptime/cron-and-heartbeat-monitor/),
 create `heartbeat.url` file with heartbeat URL in the root of the project.
 
+## systemd files
+
+`systemd/*` folder contains files that can be copied to `/etc/systemd/system/`
+or symlinked with `systemctl link /home/banknote/banknote-tabulator/systemd/banknote.*`
+
+Enable cronjob with `systemctl enable --now banknote.timer`
+
 ## Development environment
 
 ### Docker-based

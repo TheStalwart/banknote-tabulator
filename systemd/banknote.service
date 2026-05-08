@@ -1,0 +1,12 @@
+[Unit]
+Description=Banknote tabulator product download
+
+[Service]
+Type=oneshot
+ExecStart=/home/banknote/banknote-tabulator/.venv/bin/python3 /home/banknote/banknote-tabulator/download-products.py --delay=30
+WorkingDirectory=/home/banknote/banknote-tabulator
+User=banknote
+Group=banknote
+TimeoutStartSec=24h
+KillMode=process
+
