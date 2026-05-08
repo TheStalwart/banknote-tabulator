@@ -62,15 +62,19 @@ class Banknote:
 
         latest_zipfile_name = 'latest.zip'
         latest_zipfile_path = os.path.join(self.archives_path, latest_zipfile_name)
-        latest_zipfile_timestamp = os.path.getmtime(latest_zipfile_path)
-        latest_zipfile_datetime = datetime.fromtimestamp(latest_zipfile_timestamp, tz=pytz.timezone('GMT'))
-        latest_zipfile_age_seconds = current_timestamp - latest_zipfile_timestamp
-        latest_zipfile_age_hours = math.floor(latest_zipfile_age_seconds / 60 / 60)
-        print(f"{self.log_tag} Latest archive file is {latest_zipfile_age_hours} hours old")
+        latest_zipfile_timestamp = os.path.getmtime(latest_zipfile_path) if os.path.isfile(latest_zipfile_path) else 0
 
-        if latest_zipfile_age_hours < SKIP_ARCHIVING_IF_LATEST_AGE_HOURS_LESS_THAN:
-            print(f"{self.log_tag} Skipping archiving operation")
-            return
+        if latest_zipfile_timestamp == 0:
+            print(f"{self.log_tag} No existing archive found, creating new one")
+        else:
+            latest_zipfile_datetime = datetime.fromtimestamp(latest_zipfile_timestamp, tz=pytz.timezone('GMT'))
+            latest_zipfile_age_seconds = current_timestamp - latest_zipfile_timestamp
+            latest_zipfile_age_hours = math.floor(latest_zipfile_age_seconds / 60 / 60)
+            print(f"{self.log_tag} Latest archive file is {latest_zipfile_age_hours} hours old")
+
+            if latest_zipfile_age_hours < SKIP_ARCHIVING_IF_LATEST_AGE_HOURS_LESS_THAN:
+                print(f"{self.log_tag} Skipping archiving operation")
+                return
 
         print(f"{self.log_tag} Creating new archive")
 
