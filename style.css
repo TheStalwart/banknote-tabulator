@@ -34,6 +34,14 @@
     margin-left: 10px;
 }
 
+body {
+    /*
+        Firefox on Bazzite Linux defaults to a serif font,
+        but i prefer sans-serif fonts
+    */
+    font-family: sans-serif;
+}
+
 @media (prefers-color-scheme: dark) {
     :root {
         color-scheme: dark;
