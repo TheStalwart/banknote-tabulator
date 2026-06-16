@@ -2,12 +2,12 @@ const fs = require("node:fs");
 const vm = require("node:vm");
 
 const tabulatorFilters = {
-    "=": function(filterVal, rowVal) { return rowVal == filterVal; },
-    "<": function(filterVal, rowVal) { return rowVal < filterVal; },
-    "<=": function(filterVal, rowVal) { return rowVal <= filterVal; },
-    ">": function(filterVal, rowVal) { return rowVal > filterVal; },
-    ">=": function(filterVal, rowVal) { return rowVal >= filterVal; },
-    like: function(filterVal, rowVal) {
+    "=": (filterVal, rowVal) => rowVal == filterVal,
+    "<": (filterVal, rowVal) => rowVal < filterVal,
+    "<=": (filterVal, rowVal) => rowVal <= filterVal,
+    ">": (filterVal, rowVal) => rowVal > filterVal,
+    ">=": (filterVal, rowVal) => rowVal >= filterVal,
+    like: (filterVal, rowVal) => {
         if (filterVal === null || typeof filterVal === "undefined") {
             return rowVal === filterVal;
         }
@@ -22,7 +22,7 @@ const tabulatorFilters = {
 
 const context = {
     console: console,
-    document: {addEventListener: function() {}},
+    document: {addEventListener: () => {}},
     window: {},
     Tabulator: {
         moduleBindings: {
@@ -35,16 +35,16 @@ context.globalThis = context;
 vm.createContext(context);
 vm.runInContext(fs.readFileSync("banknote-tabulator.js", "utf8"), context);
 
-function assertEqual(name, actual, expected) {
+const assertEqual = (name, actual, expected) => {
     if (actual !== expected) {
         throw new Error(name + ": expected " + expected + ", got " + actual);
     }
-}
+};
 
-function resetCaches() {
+const resetCaches = () => {
     context.numericFilterExpressionCache = {};
     context.numericRowValueCache = {};
-}
+};
 
 resetCaches();
 
@@ -75,7 +75,7 @@ const genericParams = {};
     ["Storage rejects model without capacity", context.parseNumericRowValue("Optiarc DVD RW AD-7280S", storageParams), null],
     ["Generic size still parses first number", context.parseNumericRowValue("27\"", genericParams), 27],
     ["Generic refresh still parses first number", context.parseNumericRowValue("144 Hz", genericParams), 144],
-].forEach(function(testCase) {
+].forEach((testCase) => {
     assertEqual(testCase[0], testCase[1], testCase[2]);
 });
 
