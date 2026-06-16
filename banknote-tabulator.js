@@ -1,10 +1,134 @@
+var numericFilterExpressionCache = {};
+var numericRowValueCache = {};
+
+function numericColumn(title, field) {
+    return {
+        title: title,
+        field: field,
+        headerFilter: true,
+        headerFilterFunc: numericTextFilterFunc,
+        headerFilterFuncParams: {
+            parseCapacity: ["ram", "storage"].includes(field),
+        },
+    };
+}
+
+function parseNumericValue(value) {
+    return parseFloat(String(value).replace(",", "."));
+}
+
+function normalizeCapacityToGb(value, unit) {
+    var numberValue = parseNumericValue(value);
+    var unitName = (unit || "").toLowerCase();
+
+    if (["gb", "g", "гб", "gб"].includes(unitName)) {
+        return numberValue;
+    }
+
+    if (["tb", "t", "tб", "тб", "tr"].includes(unitName)) {
+        return numberValue * 1024;
+    }
+
+    // only mb left
+    return numberValue / 1024;
+}
+
+function parseCapacityValue(value) {
+    var rawValue = String(value);
+    var capacityRegex = /([+-]?\d+(?:[.,]\d+)?)\s*(gb|gб|tb|mb|гб|тб|tб|tr|[gt](?=\s|$|[^a-zа-яё]))/gi;
+    var capacities = [];
+    var match;
+
+    while ((match = capacityRegex.exec(rawValue)) !== null) {
+        var capacity = normalizeCapacityToGb(match[1], match[2]);
+
+        if (!Number.isNaN(capacity)) {
+            capacities.push(capacity);
+        }
+    }
+
+    if (capacities.length > 0) {
+        return Math.max(...capacities);
+    }
+
+    // plain number, nothing else
+    if (/^\s*[+-]?\d+(?:[.,]\d+)?\s*$/.test(rawValue)) {
+        return parseNumericValue(rawValue);
+    }
+
+    // mid trash like "512 SSD", no GB
+    var storageMatch = rawValue.match(/(?:([+-]?\d+(?:[.,]\d+)?)\s*(?:ssd|hdd)\b|(?:ssd|hdd)\D+([+-]?\d+(?:[.,]\d+)?))/i);
+    if (storageMatch) {
+        return parseNumericValue(storageMatch[1] || storageMatch[2]);
+    }
+
+    // deliberately not handling complete trash like "asdf512ghjkl"
+    return null;
+}
+
+function numericFilterExpression(headerValue, filterParams) {
+    var rawValue = String(headerValue || "").trim();
+    var cacheKey = (filterParams.parseCapacity ? "capacity:" : "plain:") + rawValue;
+
+    if (Object.prototype.hasOwnProperty.call(numericFilterExpressionCache, cacheKey)) {
+        return numericFilterExpressionCache[cacheKey];
+    }
+
+    var expression = null;
+    var expressionMatch = rawValue.match(/^(>=|<=|>|<|=)\s*([+-]?\d+)$/);
+    if (expressionMatch) {
+        expression = {
+            operator: expressionMatch[1],
+            value: parseNumericValue(expressionMatch[2]),
+        };
+    }
+    numericFilterExpressionCache[cacheKey] = expression;
+
+    return expression;
+}
+
+function parseNumericRowValue(rowValue, filterParams) {
+    if (rowValue === null || rowValue === undefined) {
+        return null;
+    }
+
+    var rawValue = String(rowValue);
+    var cacheKey = (filterParams.parseCapacity ? "capacity:" : "plain:") + rawValue;
+
+    if (Object.prototype.hasOwnProperty.call(numericRowValueCache, cacheKey)) {
+        return numericRowValueCache[cacheKey];
+    }
+
+    numericRowValueCache[cacheKey] = filterParams.parseCapacity
+        ? parseCapacityValue(rawValue)
+        : parseNumericValue(rawValue);
+
+    return numericRowValueCache[cacheKey];
+}
+
+function numericTextFilterFunc(headerValue, rowValue, rowData, filterParams) {
+    var expression = numericFilterExpression(headerValue, filterParams);
+
+    if (!expression) {
+        return Tabulator.moduleBindings.filter.filters.like(headerValue, rowValue, rowData, filterParams);
+    }
+
+    var numericRowValue = parseNumericRowValue(rowValue, filterParams);
+
+    if (numericRowValue === null || Number.isNaN(numericRowValue)) {
+        return false;
+    }
+
+    return Tabulator.moduleBindings.filter.filters[expression.operator](expression.value, numericRowValue, rowData, filterParams);
+}
+
 var categories = [
     {
         "name": "laptops",
         "columns": [
             {title: "CPU", field: "cpu", headerFilter: true},
-            {title: "RAM", field: "ram", headerFilter: true},
-            {title: "Storage", field: "storage", headerFilter: true},
+            numericColumn("RAM", "ram"),
+            numericColumn("Storage", "storage"),
             {title: "GPU", field: "gpu", headerFilter: true}
         ]
     },
@@ -12,8 +136,8 @@ var categories = [
         "name": "desktops",
         "columns": [
             {title: "CPU", field: "cpu", headerFilter: true},
-            {title: "RAM", field: "ram", headerFilter: true},
-            {title: "Storage", field: "storage", headerFilter: true},
+            numericColumn("RAM", "ram"),
+            numericColumn("Storage", "storage"),
             {title: "GPU", field: "gpu", headerFilter: true},
             {title: "OS", field: "os", headerFilter: true},
             {title: "Motherboard", field: "motherboard", headerFilter: true}
@@ -23,8 +147,8 @@ var categories = [
         "name": "monitors",
         "columns": [
             {title: "Resolution", field: "resolution", headerFilter: true},
-            {title: "Size", field: "size", headerFilter: true},
-            {title: "Refresh rate", field: "refresh_rate", headerFilter: true},
+            numericColumn("Size", "size"),
+            numericColumn("Refresh rate", "refresh_rate"),
             {title: "Panel", field: "panel", headerFilter: true}
         ]
     }
