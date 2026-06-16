@@ -2,14 +2,16 @@ var numericFilterExpressionCache = {};
 var numericRowValueCache = {};
 
 function numericColumn(title, field) {
+    var isCapacityCol = ["ram", "storage"].includes(field);
     return {
         title: title,
         field: field,
         headerFilter: true,
         headerFilterFunc: numericTextFilterFunc,
         headerFilterFuncParams: {
-            parseCapacity: ["ram", "storage"].includes(field),
+            parseCapacity: isCapacityCol,
         },
+        headerTooltip: "Try >, >=, <, <=, =" + (isCapacityCol ? "; expects GB" : "")
     };
 }
 
