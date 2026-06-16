@@ -41,12 +41,10 @@ const assertEqual = (name, actual, expected) => {
     }
 };
 
-const resetCaches = () => {
-    context.numericFilterExpressionCache = {};
-    context.numericRowValueCache = {};
-};
 
-resetCaches();
+// reset caches
+context.numericFilterExpressionCache = {};
+context.numericRowValueCache = {};
 
 const capacityParams = {parseCapacity: true};
 const storageParams = {parseCapacity: true};
