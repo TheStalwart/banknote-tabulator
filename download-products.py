@@ -76,7 +76,7 @@ def normalize_product(category_name, specs):
             elif re.search('(atmi|disk|hdd|ssd)', entry['title'], re.IGNORECASE) and not re.search('(oper|las)', entry['title'], re.IGNORECASE):
                 # avoid "Diska lasītājs" key
                 normalized['storage'] = entry['value']
-            elif re.search('(gpu|video)', entry['title'], re.IGNORECASE):
+            elif re.search('(gpu|video|grafisk)', entry['title'], re.IGNORECASE):
                 # Some laptops like ASUS Zephyrus G14 have _two_ GPU entries - for iGPU and dGPU, separately
                 if 'gpu' in normalized:
                     normalized['gpu'] = normalized['gpu'] + " + " + entry['value']
