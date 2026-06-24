@@ -1,6 +1,34 @@
 var numericFilterExpressionCache = {};
 var numericRowValueCache = {};
 
+function buildFilterShareUrl(currentUrl, categoryName, headerFilters) {
+    var url = new URL(currentUrl);
+    var currentParams = new URLSearchParams(url.search);
+
+    for (const key of Array.from(currentParams.keys())) {
+        if (key.startsWith("headerFilter")) {
+            currentParams.delete(key);
+        }
+    }
+
+    currentParams.set("category", categoryName);
+
+    headerFilters.forEach(function(filter, index) {
+        currentParams.append(`headerFilter[${index}][field]`, filter.field);
+        currentParams.append(`headerFilter[${index}][type]`, typeof filter.type === "function" ? "like" : filter.type);
+
+        if (filter.value !== null && typeof filter.value === "object" && !Array.isArray(filter.value)) {
+            currentParams.append(`headerFilter[${index}][value][start]`, filter.value.start);
+            currentParams.append(`headerFilter[${index}][value][end]`, filter.value.end);
+        } else {
+            currentParams.append(`headerFilter[${index}][value]`, filter.value);
+        }
+    });
+
+    url.search = currentParams.toString();
+    return url.toString();
+}
+
 function numericColumn(title, field) {
     var isCapacityCol = ["ram", "storage"].includes(field);
     return {
@@ -291,6 +319,7 @@ function loadInventory(categoryName) {
     /**
      * Treat the query param value as a list of form values, not JSON,
      * e.g., headerFilter[0]["field"]="cpu"
+     * The nested handling is for the price range inputs
      *
      * @param string fieldName
      * @returns {any|null}
@@ -301,25 +330,35 @@ function loadInventory(categoryName) {
         }
 
         const urlParams = new URLSearchParams(window.location.search);
-        var result = {};
-        var found = false;
+        var result = [];
 
         for (const [key, value] of urlParams.entries()) {
             if (key === fieldName) {
                 return value;
             }
 
-            const match = key.match(/^(\w+)\[(\d+)\]\[(\w+)\]$/);
+            const match = key.match(/^(\w+)\[(\d+)\]\[(\w+)\](?:\[(\w+)\])?$/);
             if (match && match[1] === fieldName) {
-                if (!result[fieldName]) {
-                    result[fieldName] = [{}];
+                if (!result[match[2]]) {
+                    result[match[2]] = {};
                 }
-                result[fieldName][match[2]][match[3]] = value;
-                found = true;
+
+                var item = result[match[2]];
+                var propertyName = match[3];
+                var nestedPropertyName = match[4];
+
+                if (nestedPropertyName) {
+                    if (!item[propertyName]) {
+                        item[propertyName] = {};
+                    }
+                    item[propertyName][nestedPropertyName] = value;
+                } else {
+                    item[propertyName] = value;
+                }
             }
         }
 
-        return found ? result[fieldName] : null;
+        return result.length > 0 ? result : null;
     }
 
     table = new Tabulator("#example-table", {
@@ -464,6 +503,25 @@ function loadInventory(categoryName) {
             }
             url.search = currentParams.toString();
             window.history.pushState({}, "", url);
+        }
+    }
+
+    document.getElementById("copyFilterUrlButton").onclick = function(event){
+        var button = event.target;
+        var filterUrl = buildFilterShareUrl(window.location.href, categoryName, table.getHeaderFilters());
+
+        if (window.navigator && window.navigator.clipboard && window.navigator.clipboard.writeText) {
+            window.navigator.clipboard.writeText(filterUrl).then(function() {
+                button.style.minWidth = button.offsetWidth + "px";
+                button.innerText = "Copied";
+                window.setTimeout(function() {
+                    button.innerText = "Copy filter URL";
+                }, 1500);
+            }).catch(function() {
+                window.prompt("Copy filter URL", filterUrl);
+            });
+        } else {
+            window.prompt("Copy filter URL", filterUrl);
         }
     }
 }
